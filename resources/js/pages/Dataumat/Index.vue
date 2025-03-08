@@ -135,10 +135,10 @@ function deleteRecord(id) {
                                 Nama Umat
                             </th>
                             <th
-                                @click="handleSort('mandarin')"
+                                @click="handleSort('nama_alias')"
                                 class="cursor-pointer px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
                             >
-                                Mandarin
+                                Nama Alias
                             </th>
                             <th
                                 @click="handleSort('mandarin')"
