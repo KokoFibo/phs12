@@ -20,7 +20,7 @@ defineProps({
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-            <CardInfo label="Umat Baru Bulan ini" :jumlah="umatBulanIni" />
+            <CardInfo label="Umat Baru Bulan Ini" :jumlah="umatBulanIni" />
 
             <CardInfo label="Total Umat" :jumlah="totalUmat">
                 <template #icon>
