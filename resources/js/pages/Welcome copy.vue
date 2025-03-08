@@ -24,28 +24,18 @@ import { Head, Link } from '@inertiajs/vue3';
                     >
                         Log in
                     </Link>
-                    <!-- <Link
+                    <Link
                         :href="route('register')"
                         class="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
                     >
                         Register
-                    </Link> -->
+                    </Link>
                 </template>
             </nav>
         </header>
         <div class="duration-750 starting:opacity-0 flex w-full items-center justify-center opacity-100 transition-opacity lg:grow">
-            <main class="flex flex-col items-center p-8 text-center">
-                <h2 class="flex items-center gap-2 text-center text-3xl font-bold">👋 Welcome!</h2>
-                <p class="mt-2 text-gray-600 dark:text-gray-300">Sistem manajemen vihara Pelita Hati.</p>
-                <!-- <div class="mt-6">
-                    <Link
-                        v-if="$page.props.auth.user"
-                        :href="route('dashboard')"
-                        class="rounded-md bg-blue-600 px-6 py-3 text-lg font-medium text-white hover:bg-blue-700"
-                    >
-                        Masuk ke Dashboard
-                    </Link>
-                </div> -->
+            <main class="flex w-full max-w-[335px] flex-col-reverse overflow-hidden rounded-lg lg:max-w-4xl lg:flex-row">
+                Welcome to PHS versi 2.0
             </main>
         </div>
         <div class="h-14.5 hidden lg:block"></div>
