@@ -295,10 +295,12 @@ function deleteRecord(id) {
                                     <p><strong>Mandarin:</strong> {{ selectedUmat.mandarin }}</p>
                                     <p><strong>Umur:</strong> {{ umur }}</p>
                                     <p><strong>Gender:</strong> {{ chienkhun }}</p>
-
+                                    <p><strong>Pengajak:</strong> {{ selectedUmat.pengajak }}</p>
+                                    <p><strong>Pandita:</strong> {{ selectedUmat.pandita.nama_pandita }}</p>
+                                    <p><strong>Tanggal Mohon Tao:</strong> {{ selectedUmat.tgl_mohonTao }}</p>
                                     <p><strong>Tanggal Mohon Tao (Lunar):</strong> {{ tanggal_mohon_Tao_lunar }}</p>
+                                    <p><strong>Group:</strong> {{ selectedUmat.group.nama_group }}</p>
 
-                                    <p><strong>Tanggal Sidang Dharma 3 Hari :</strong> {{ selectedUmat.tgl_sd3h }}</p>
                                     <p><strong>Alamat:</strong> {{ selectedUmat.alamat }}</p>
                                     <p><strong>Keterangan:</strong> {{ selectedUmat.keterangan }}</p>
                                 </div>
@@ -311,8 +313,13 @@ function deleteRecord(id) {
                                     <p><strong>Pandita:</strong> {{ selectedUmat.pandita.nama_pandita }}</p>
                                     <p><strong>HP:</strong> {{ selectedUmat.hp }}</p>
                                     <p><strong>Telp:</strong> {{ selectedUmat.telp }}</p>
-                                    <p><strong>Tanggal Mohon Tao:</strong> {{ selectedUmat.tgl_mohonTao }}</p>
-                                    <p><strong>Tanggal Vegetraian Total :</strong> {{ selectedUmat.tgl_vtotal }}</p>
+                                    <p><strong>Penjamin:</strong> {{ selectedUmat.penjamin }}</p>
+                                    <p><strong>Tanggal Sidang Dharma 3 Hari :</strong> {{ selectedUmat.tgl_sd3h }}</p>
+
+                                    <p><strong>Tanggal Vegetarian Total :</strong> {{ selectedUmat.tgl_vtotal }}</p>
+                                    <p><strong>Kota:</strong> {{ selectedUmat.kota.nama_kota }}</p>
+                                    <p><strong>Vihara:</strong> {{ selectedUmat.vihara.nama_vihara }}</p>
+
                                     <p><strong>Status:</strong> {{ selectedUmat.status }}</p>
                                 </div>
                             </div>
