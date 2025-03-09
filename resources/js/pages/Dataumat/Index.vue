@@ -1,6 +1,6 @@
 <script setup>
 import AppLayout from '@/layouts/AppLayout.vue';
-import { ChevronLeftIcon, ChevronRightIcon, PencilIcon, TrashIcon } from '@heroicons/vue/24/solid';
+import { ChevronLeftIcon, ChevronRightIcon, MagnifyingGlassIcon, PencilIcon, TrashIcon } from '@heroicons/vue/24/solid';
 import { router } from '@inertiajs/vue3';
 import debounce from 'lodash/debounce';
 import { onMounted, ref, watch } from 'vue';
@@ -18,6 +18,41 @@ const sortBy = ref('id');
 const sortOrder = ref('asc');
 const perPage = ref(10);
 
+const isModalOpen = ref(false);
+const selectedUmat = ref(null);
+const umur = ref(null);
+const chienkhun = ref(null);
+const tanggal_mohon_Tao_lunar = ref(null);
+
+const loading = ref(false);
+
+function openDetailModal(id) {
+    loading.value = true;
+    router.get(
+        route('dataumats.detail', id),
+        {},
+        {
+            preserveState: true,
+            onSuccess: (page) => {
+                selectedUmat.value = page.props.umat;
+                umur.value = page.props.umur;
+                chienkhun.value = page.props.chienkhun;
+                tanggal_mohon_Tao_lunar.value = page.props.tanggal_mohon_Tao_lunar;
+                isModalOpen.value = true;
+                loading.value = false;
+            },
+        },
+    );
+}
+
+function closeModal() {
+    isModalOpen.value = false;
+    selectedUmat.value = null;
+    umur.value = null;
+    chienkhun.value = null;
+    tanggal_mohon_Tao_lunar.value = null;
+}
+// console.log('nama umat: ', props.umat.nama_umat);
 const getGenderClass = (jeniskelamin) => {
     return ['乾', '童'].includes(jeniskelamin) ? 'text-blue-500' : 'text-pink-500';
 };
@@ -123,11 +158,17 @@ function deleteRecord(id) {
 
             <!-- Scrollable Table Container -->
             <div class="w-full overflow-x-auto py-4">
-                <table class="min-w-full table-auto table-fixed divide-y divide-gray-200">
+                <table class="min-w-full table-auto divide-y divide-gray-200">
                     <thead class="bg-gray-50">
                         <tr>
                             <th class="px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500">Aksi</th>
 
+                            <th
+                                @click="handleSort('id')"
+                                class="cursor-pointer px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
+                            >
+                                ID
+                            </th>
                             <th
                                 @click="handleSort('nama_umat')"
                                 class="cursor-pointer px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
@@ -204,8 +245,12 @@ function deleteRecord(id) {
                                     <button @click="deleteRecord(dataumat.id)" class="rounded bg-red-500 px-2 py-1 text-white hover:bg-red-600">
                                         <TrashIcon class="h-4 w-4" />
                                     </button>
+                                    <button @click="openDetailModal(dataumat.id)" class="rounded bg-blue-500 px-2 py-1 text-white hover:bg-red-600">
+                                        <MagnifyingGlassIcon class="h-4 w-4" />
+                                    </button>
                                 </div>
                             </td>
+                            <td class="whitespace-normal px-4 py-2 text-sm text-gray-500">{{ dataumat.id }}</td>
                             <td class="whitespace-normal px-4 py-2 text-sm text-gray-500">{{ dataumat.nama_umat }}</td>
                             <td class="whitespace-normal px-4 py-2 text-sm text-gray-500">{{ dataumat.nama_alias }}</td>
                             <td class="whitespace-normal px-4 py-2 text-sm text-gray-500">{{ dataumat.mandarin }}</td>
@@ -234,6 +279,48 @@ function deleteRecord(id) {
                         </tr>
                     </tbody>
                 </table>
+                <!-- Modal Detail -->
+                <transition name="fade">
+                    <div v-if="isModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                        <div class="rounded-lg bg-white p-6 shadow-lg">
+                            <h2 class="text-center text-lg font-semibold">Detail Data Umat</h2>
+
+                            <div v-if="loading" class="py-4 text-center text-gray-500">Loading...</div>
+                            <div v-else-if="selectedUmat" class="mt-4 grid grid-cols-1 gap-6 text-sm md:grid-cols-2">
+                                <!-- Kolom 1 -->
+                                <div class="text-sm leading-6">
+                                    <p><strong>ID:</strong> {{ selectedUmat.id }}</p>
+                                    <p><strong>Nama:</strong> {{ selectedUmat.nama_umat }}</p>
+                                    <p><strong>Alias:</strong> {{ selectedUmat.nama_alias }}</p>
+                                    <p><strong>Mandarin:</strong> {{ selectedUmat.mandarin }}</p>
+                                    <p><strong>Umur:</strong> {{ umur }}</p>
+                                    <p><strong>Gender:</strong> {{ chienkhun }}</p>
+
+                                    <p><strong>Tanggal Mohon Tao (Lunar):</strong> {{ tanggal_mohon_Tao_lunar }}</p>
+
+                                    <p><strong>Tanggal Sidang Dharma 3 Hari :</strong> {{ selectedUmat.tgl_sd3h }}</p>
+                                    <p><strong>Alamat:</strong> {{ selectedUmat.alamat }}</p>
+                                    <p><strong>Keterangan:</strong> {{ selectedUmat.keterangan }}</p>
+                                </div>
+
+                                <!-- Kolom 2 -->
+                                <div class="text-sm leading-6">
+                                    <p><strong>Kota:</strong> {{ selectedUmat.kota.nama_kota }}</p>
+                                    <p><strong>Group:</strong> {{ selectedUmat.group.nama_group }}</p>
+                                    <p><strong>Vihara:</strong> {{ selectedUmat.vihara.nama_vihara }}</p>
+                                    <p><strong>Pandita:</strong> {{ selectedUmat.pandita.nama_pandita }}</p>
+                                    <p><strong>HP:</strong> {{ selectedUmat.hp }}</p>
+                                    <p><strong>Telp:</strong> {{ selectedUmat.telp }}</p>
+                                    <p><strong>Tanggal Mohon Tao:</strong> {{ selectedUmat.tgl_mohonTao }}</p>
+                                    <p><strong>Tanggal Vegetraian Total :</strong> {{ selectedUmat.tgl_vtotal }}</p>
+                                    <p><strong>Status:</strong> {{ selectedUmat.status }}</p>
+                                </div>
+                            </div>
+
+                            <button @click="closeModal" class="mt-6 w-full rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600">Tutup</button>
+                        </div>
+                    </div>
+                </transition>
             </div>
 
             <!-- Pagination -->

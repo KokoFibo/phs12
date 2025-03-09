@@ -1,7 +1,27 @@
 <script setup>
 import CardInfo from '@/components/CardInfo.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
+import { useAuthStore } from '@/Stores/authStore';
 import { Head } from '@inertiajs/vue3';
+
+const userStore = useAuthStore();
+
+const props = defineProps({
+    totalUmat: Number,
+    umatBulanIni: Number,
+    auth: Object, // Pastikan Laravel mengirimkan `auth`
+    // kota: String,
+});
+
+// Set user hanya jika belum di-set sebelumnya
+// if (!userStore.user) {
+//     userStore.setUser(props.auth?.user || null);
+// }
+console.log(props.kota);
+userStore.setUser(props.auth?.user || null);
+userStore.setKota(props.auth.kota);
+userStore.setGroup(props.auth.group);
+userStore.setVihara(props.auth.vihara);
 
 const breadcrumbs = [
     {
@@ -9,10 +29,6 @@ const breadcrumbs = [
         href: '/dashboard',
     },
 ];
-defineProps({
-    totalUmat: Number,
-    umatBulanIni: Number,
-});
 </script>
 
 <template>
