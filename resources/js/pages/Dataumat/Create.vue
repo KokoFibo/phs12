@@ -1,7 +1,10 @@
 <script setup>
 import AppLayout from '@/layouts/AppLayout.vue';
+import { useAuthStore } from '@/Stores/authStore';
 import { useForm } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
+
+const userStore = useAuthStore();
 
 const breadcrumbs = [
     {
@@ -9,6 +12,7 @@ const breadcrumbs = [
         href: '/dataumats/create',
     },
 ];
+
 const props = defineProps({
     kotas: Array,
     panditas: Array,
@@ -39,6 +43,14 @@ const form = useForm({
     status: '',
     keterangan: '',
 });
+
+if (userStore.setviharaSendiri === true) {
+    form.kota_id = userStore.user.kota_id;
+    form.group_id = userStore.user.group_id;
+    form.vihara_id = userStore.user.vihara_id;
+    form.pandita_id = userStore.user.pandita_id;
+}
+// console.log(userStore.setviharaSendiri);
 function clearData() {
     form.reset();
 }
@@ -46,50 +58,74 @@ function clearData() {
 // State untuk menyimpan daftar groups dan viharas
 const groups = ref([]);
 const viharas = ref([]);
+const unlockPandita = ref(userStore.unlockPandita);
+const unlock = ref(userStore.unlock);
+
+watch(unlockPandita, (newValue) => {
+    userStore.setUnlockPandita(newValue); // ✅ Memanggil setter dengan nilai baru
+});
+watch(unlock, (newValue) => {
+    userStore.setUnlock(newValue); // ✅ Memanggil setter dengan nilai baru
+});
 
 // Watch untuk memperbarui groups saat kota_id berubah
+
+// watch(() => userStore.toggleVihara, userStore.setviharaSendiri, userStore.setUnlock(false));
 watch(
-    () => form.kota_id,
-    async (newKotaId) => {
-        if (newKotaId) {
-            try {
-                const response = await fetch(route('groups.by.kota', newKotaId));
-                const data = await response.json();
-                groups.value = data;
-                form.group_id = ''; // Reset group_id
-                viharas.value = []; // Reset viharas
-                form.vihara_id = ''; // Reset vihara_id
-            } catch (error) {
-                console.error('Error fetching groups:', error);
-            }
-        } else {
-            groups.value = [];
-            viharas.value = [];
-            form.group_id = '';
-            form.vihara_id = '';
+    () => userStore.setviharaSendiri, // Perubahan yang dipantau
+    (newValue) => {
+        if (newValue) {
+            userStore.setUnlock(false); // Reset unlock jika setviharaSendiri aktif
+            unlock.value = false;
+            form.pandita_id = userStore.user.pandita_id;
         }
     },
 );
 
-// Watch untuk memperbarui viharas saat group_id berubah
-watch(
-    () => form.group_id,
-    async (newGroupId) => {
-        if (newGroupId) {
-            try {
-                const response = await fetch(route('viharas.by.group', newGroupId));
-                const data = await response.json();
-                viharas.value = data;
-                form.vihara_id = ''; // Reset vihara_id
-            } catch (error) {
-                console.error('Error fetching viharas:', error);
+if (userStore.setviharaSendiri == false) {
+    watch(
+        () => form.kota_id,
+        async (newKotaId) => {
+            if (newKotaId) {
+                try {
+                    const response = await fetch(route('groups.by.kota', newKotaId));
+                    const data = await response.json();
+                    groups.value = data;
+                    form.group_id = ''; // Reset group_id
+                    viharas.value = []; // Reset viharas
+                    form.vihara_id = ''; // Reset vihara_id
+                } catch (error) {
+                    console.error('Error fetching groups:', error);
+                }
+            } else {
+                groups.value = [];
+                viharas.value = [];
+                form.group_id = '';
+                form.vihara_id = '';
             }
-        } else {
-            viharas.value = [];
-            form.vihara_id = '';
-        }
-    },
-);
+        },
+    );
+
+    // Watch untuk memperbarui viharas saat group_id berubah
+    watch(
+        () => form.group_id,
+        async (newGroupId) => {
+            if (newGroupId) {
+                try {
+                    const response = await fetch(route('viharas.by.group', newGroupId));
+                    const data = await response.json();
+                    viharas.value = data;
+                    form.vihara_id = ''; // Reset vihara_id
+                } catch (error) {
+                    console.error('Error fetching viharas:', error);
+                }
+            } else {
+                viharas.value = [];
+                form.vihara_id = '';
+            }
+        },
+    );
+}
 
 function submit() {
     form.post(route('dataumats.store'), {
@@ -97,21 +133,98 @@ function submit() {
     });
 }
 </script>
+
 <template>
     <Head title="Tambah Data Umat" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="mx-auto mt-3 max-w-7xl rounded-lg border py-6 sm:px-6 lg:px-8">
+            <p>unlockPandita: {{ unlockPandita }}</p>
             <form @submit.prevent="submit" class="space-y-6">
                 <!-- Pilihan Kota, Group, Vihara, Pandita -->
-                <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <div class="mb-4 flex items-center">
+                    <input
+                        id="default-checkbox"
+                        type="checkbox"
+                        v-model="userStore.setviharaSendiri"
+                        class="h-4 w-4 rounded-sm border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600"
+                    />
+                    <label for="default-checkbox" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Input untuk daerah sendiri</label>
+                </div>
+                <!-- <div class="flex items-center" :class={{ userStore.setviharaSendiri? 'justify-end': 'justify-between' }}> -->
+                <div class="flex items-center" :class="userStore.setviharaSendiri ? 'justify-end' : 'justify-between'">
+                    <div v-if="!userStore.setviharaSendiri">
+                        <label class="inline-flex cursor-pointer items-center">
+                            <input type="checkbox" value="" class="peer sr-only" v-model="unlock" />
+                            <div
+                                class="peer relative h-6 w-11 rounded-full bg-gray-200 after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:peer-checked:bg-blue-600 dark:peer-focus:ring-blue-800 rtl:peer-checked:after:-translate-x-full"
+                            ></div>
+                            <span v-if="unlock" class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Locked</span>
+                            <span v-else class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Unlock</span>
+                        </label>
+                    </div>
+                    <div>
+                        <label class="inline-flex cursor-pointer items-center">
+                            <input type="checkbox" value="" class="peer sr-only" v-model="unlockPandita" />
+                            <div
+                                class="peer relative h-6 w-11 rounded-full bg-gray-200 after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:peer-checked:bg-blue-600 dark:peer-focus:ring-blue-800 rtl:peer-checked:after:-translate-x-full"
+                            ></div>
+                            <span v-if="unlockPandita" class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Pandita Terpilih</span>
+                            <span v-else class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Bebas</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div v-if="userStore.setviharaSendiri" class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+                    <div>
+                        <label for="nama_umat" class="block text-sm font-medium text-gray-700">Kota</label>
+                        <input
+                            disabled
+                            :value="userStore.kota"
+                            type="text"
+                            class="mt-1 block w-full rounded-md border border-gray-300 p-2 text-sm shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+                        />
+                    </div>
+                    <div>
+                        <label for="nama_umat" class="block text-sm font-medium text-gray-700">Group</label>
+                        <input
+                            disabled
+                            :value="userStore.group"
+                            type="text"
+                            class="mt-1 block w-full rounded-md border border-gray-300 p-2 text-sm shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+                        />
+                    </div>
+                    <div>
+                        <label for="nama_umat" class="block text-sm font-medium text-gray-700">Vihara</label>
+                        <input
+                            disabled
+                            :value="userStore.vihara"
+                            type="text"
+                            class="mt-1 block w-full rounded-md border border-gray-300 p-2 text-sm shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+                        />
+                    </div>
+                    <div>
+                        <label for="pandita_id" class="block text-sm font-medium text-gray-700">Pandita</label>
+                        <select
+                            v-model="form.pandita_id"
+                            id="pandita_id"
+                            class="mt-1 block w-full rounded-md border border-gray-300 p-2 text-sm shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+                            :disabled="unlockPandita"
+                        >
+                            <option value="" disabled>Pilih Pandita</option>
+                            <option v-for="pandita in panditas" :key="pandita.id" :value="pandita.id">{{ pandita.nama_pandita }}</option>
+                        </select>
+                        <p v-if="errors.pandita_id" class="text-sm text-red-500">{{ errors.pandita_id }}</p>
+                    </div>
+                </div>
+                <div v-else class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
                     <div>
                         <label for="kota_id" class="block text-sm font-medium text-gray-700">Kota</label>
                         <select
                             v-model="form.kota_id"
                             id="kota_id"
+                            :disabled="unlock"
                             class="mt-1 block w-full rounded-md border border-gray-300 p-2 text-sm shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-                            required
                         >
                             <option value="" disabled>Pilih Kota</option>
                             <option v-for="kota in kotas" :key="kota.id" :value="kota.id">{{ kota.nama_kota }}</option>
@@ -125,7 +238,7 @@ function submit() {
                             v-model="form.group_id"
                             id="group_id"
                             class="mt-1 block w-full rounded-md border border-gray-300 p-2 text-sm shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-                            required
+                            :disabled="unlock"
                         >
                             <option value="" disabled>Pilih Group</option>
                             <option v-for="group in groups" :key="group.id" :value="group.id">{{ group.nama_group }}</option>
@@ -139,7 +252,7 @@ function submit() {
                             v-model="form.vihara_id"
                             id="vihara_id"
                             class="mt-1 block w-full rounded-md border border-gray-300 p-2 text-sm shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-                            required
+                            :disabled="unlock"
                         >
                             <option value="" disabled>Pilih Vihara</option>
                             <option v-for="vihara in viharas" :key="vihara.id" :value="vihara.id">{{ vihara.nama_vihara }}</option>
@@ -153,7 +266,7 @@ function submit() {
                             v-model="form.pandita_id"
                             id="pandita_id"
                             class="mt-1 block w-full rounded-md border border-gray-300 p-2 text-sm shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-                            required
+                            :disabled="unlockPandita"
                         >
                             <option value="" disabled>Pilih Pandita</option>
                             <option v-for="pandita in panditas" :key="pandita.id" :value="pandita.id">{{ pandita.nama_pandita }}</option>

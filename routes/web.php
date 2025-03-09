@@ -25,6 +25,7 @@ Route::get('/', function () {
 Route::get('dashboard', [DashboardController::class, 'index'])->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::resource('dataumats', DataumatController::class)->names('dataumats');
+Route::get('dataumats/detail/{id}', [DataumatController::class, 'detail'])->name('dataumats.detail');
 Route::resource('panditas', PanditaController::class)->names('panditas');
 Route::resource('kotas', KotaController::class)->names('kotas');
 Route::resource('groups', GroupController::class)->names('groups');

@@ -15,6 +15,32 @@ use Illuminate\Http\Request;
 
 class DataumatController extends Controller
 {
+
+    public function detail($id)
+    {
+        $umat = Dataumat::with(['kota', 'group', 'vihara', 'pandita'])->findOrFail($id);
+        $umur = $umat->tgl_lahir ? Carbon::parse($umat->tgl_lahir)->age : null;
+
+        $chienkhun = function () use ($umat) {
+            $umur = $umat->tgl_lahir ? Carbon::now()->year - Carbon::parse($umat->tgl_lahir)->year : null;
+
+            if ($umur !== null) {
+                if ($umur >= 16) {
+                    return $umat->gender === '1' ? '乾' : '坤';
+                } else {
+                    return $umat->gender === '1' ? '童' : '女';
+                }
+            }
+            return null; // Jika tidak ada tanggal lahir
+        };
+        $tanggal_mohon_Tao_lunar = lunarInChinese($umat->tgl_mohonTao_lunar);
+        return Inertia::render('Dataumat/Index', [
+            'umat' => $umat,
+            'umur' => $umur,
+            'chienkhun' => $chienkhun(),
+            'tanggal_mohon_Tao_lunar' => $tanggal_mohon_Tao_lunar,
+        ]);
+    }
     protected function rules()
     {
         return [
@@ -47,7 +73,7 @@ class DataumatController extends Controller
         // Ambil filter dari request
         $search = $request->input('search');
         $sortBy = $request->input('sort_by', 'id');
-        $sortOrder = $request->input('sort_order', 'asc');
+        $sortOrder = $request->input('sort_order', 'desc');
         $perPage = $request->input('per_page', 10);
 
         // Query dataumat dengan filter pencarian
@@ -106,7 +132,6 @@ class DataumatController extends Controller
                 'pandita_nama' => $umat->pandita_id && isset($panditas[$umat->pandita_id]) ? $panditas[$umat->pandita_id]->nama_pandita : 'Tidak Ada Pandita',
             ];
         });
-
         // Kirim data ke frontend via Inertia
         return Inertia::render('Dataumat/Index', [
             'dataumats' => $dataumats->items(),
