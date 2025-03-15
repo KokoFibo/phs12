@@ -1,7 +1,17 @@
 <script setup>
 import AppLayout from '@/layouts/AppLayout.vue';
-import { Link, useForm } from '@inertiajs/vue3';
+import { Head, router, useForm } from '@inertiajs/vue3';
 
+const breadcrumbs = [
+    {
+        title: 'Edit Vihara',
+        href: '/viharas',
+    },
+];
+
+function back() {
+    router.get('/viharas');
+}
 // Props dari backend
 const props = defineProps({
     vihara: Object, // Data vihara yang akan diedit
@@ -31,9 +41,9 @@ function submit() {
 <template>
     <Head title="Edit Vihara" />
 
-    <AppLayout title="Edit Vihara">
+    <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-            <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+            <div class="max-w-2xl py-6 sm:px-6 lg:px-8">
                 <!-- Form Edit -->
                 <form @submit.prevent="submit" class="space-y-4">
                     <!-- Nama Vihara -->
@@ -67,11 +77,13 @@ function submit() {
                     </div>
 
                     <!-- Tombol Simpan dan Batal -->
-                    <div class="flex justify-end space-x-4">
-                        <button type="submit" class="rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600" :disabled="form.processing">
-                            Perbarui
+                    <div class="flex justify-between">
+                        <button @click="back" class="rounded bg-gray-900 px-4 py-2 text-white hover:bg-gray-400" :disabled="form.processing">
+                            Back
                         </button>
-                        <Link :href="route('viharas.index')" class="rounded bg-gray-500 px-4 py-2 text-white hover:bg-gray-600"> Batal </Link>
+                        <button type="submit" class="rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600" :disabled="form.processing">
+                            Update
+                        </button>
                     </div>
                 </form>
             </div>

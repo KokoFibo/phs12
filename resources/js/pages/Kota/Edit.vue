@@ -1,11 +1,11 @@
 <script setup>
-import { Link, useForm } from '@inertiajs/vue3';
+import { Head, router, useForm } from '@inertiajs/vue3';
 
 import AppLayout from '@/layouts/AppLayout.vue';
 
 const breadcrumbs = [
     {
-        title: 'Add Kota',
+        title: 'Edit Kota',
         href: '/kotas/create',
     },
 ];
@@ -22,14 +22,17 @@ function submit() {
         onSuccess: () => form.reset(),
     });
 }
+function back() {
+    router.get('/kotas');
+}
 </script>
 
 <template>
-    <Head title="Data Umat" />
+    <Head title="Edit Kota" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-            <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+            <div class="max-w-7xl py-6 sm:px-6 lg:px-8">
                 <form @submit.prevent="submit" class="space-y-4">
                     <div>
                         <label for="nama_kota" class="block text-sm font-medium text-gray-700">Nama Kota</label>
@@ -43,11 +46,13 @@ function submit() {
                         <p v-if="form.errors.nama_kota" class="text-sm text-red-500">{{ form.errors.nama_kota }}</p>
                     </div>
 
-                    <div class="flex justify-end space-x-4">
-                        <button type="submit" class="rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600" :disabled="form.processing">
-                            Perbarui
+                    <div class="flex justify-between">
+                        <button @click="back" class="rounded bg-gray-900 px-4 py-2 text-white hover:bg-gray-400" :disabled="form.processing">
+                            Back
                         </button>
-                        <Link :href="route('kotas.index')" class="rounded bg-gray-500 px-4 py-2 text-white hover:bg-gray-600"> Batal </Link>
+                        <button type="submit" class="rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600" :disabled="form.processing">
+                            Update
+                        </button>
                     </div>
                 </form>
             </div>

@@ -1,17 +1,21 @@
 <script setup>
-import { useForm } from '@inertiajs/vue3';
+import { Head, router, useForm } from '@inertiajs/vue3';
 
 import AppLayout from '@/layouts/AppLayout.vue';
 
 const breadcrumbs = [
     {
-        title: 'Kota',
-        href: '/kotas',
+        title: 'Add Vihara',
+        href: '/viharas',
     },
 ];
 defineProps({
     groups: Object,
 });
+
+function back() {
+    router.get('/viharas');
+}
 
 const form = useForm({
     nama_vihara: '',
@@ -26,11 +30,11 @@ function submit() {
 </script>
 
 <template>
-    <Head title="Data Umat" />
+    <Head title="Add Vihara" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-            <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+            <div class="max-w-2xl py-6 sm:px-6 lg:px-8">
                 <form @submit.prevent="submit" class="space-y-4">
                     <div>
                         <label for="nama_vihara" class="block text-sm font-medium text-gray-700">Nama Vihara</label>
@@ -57,10 +61,14 @@ function submit() {
                         </select>
                         <p v-if="form.errors.group_id" class="text-sm text-red-500">{{ form.errors.group_id }}</p>
                     </div>
-
-                    <button type="submit" class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600" :disabled="form.processing">
-                        Simpan
-                    </button>
+                    <div class="flex justify-between">
+                        <button @click="back" class="rounded bg-gray-900 px-4 py-2 text-white hover:bg-gray-400" :disabled="form.processing">
+                            Back
+                        </button>
+                        <button type="submit" class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600" :disabled="form.processing">
+                            Save
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>

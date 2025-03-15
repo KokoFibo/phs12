@@ -16,6 +16,14 @@ use Illuminate\Http\Request;
 class DataumatController extends Controller
 {
 
+    public function test()
+    {
+        $viharas = Vihara::with(['group.kota'])->get();
+        foreach ($viharas as $vihara) {
+            echo "Vihara: {$vihara->nama_vihara}, Group: {$vihara->group->nama_group}, Kota: {$vihara->group->kota->nama_kota} <br>";
+        }
+    }
+
     public function detail($id)
     {
         $umat = Dataumat::with(['kota', 'group', 'vihara', 'pandita'])->findOrFail($id);
@@ -44,8 +52,8 @@ class DataumatController extends Controller
     protected function rules()
     {
         return [
-            'kota_id' => 'required|exists:kotas,id',
-            'group_id' => 'required|exists:groups,id',
+            // 'kota_id' => 'required|exists:kotas,id',
+            // 'group_id' => 'required|exists:groups,id',
             'vihara_id' => 'required|exists:viharas,id',
             'pandita_id' => 'required|exists:panditas,id',
             'nama_umat' => 'required|string|max:255',
@@ -88,7 +96,8 @@ class DataumatController extends Controller
         }
 
         // Sorting dan pagination
-        $query->orderBy($sortBy, $sortOrder);
+        // $query->orderBy($sortBy, $sortOrder);
+        $query->orderBy('id', 'desc');
         $dataumats = $query->paginate($perPage);
 
         // Ambil data referensi
@@ -108,6 +117,7 @@ class DataumatController extends Controller
                 'umur' => $umat->tgl_lahir ? Carbon::parse($umat->tgl_lahir)->age : null,
                 // 'umur' => $umat->tgl_lahir ? Carbon::now()->year - Carbon::parse($umat->tgl_lahir)->year : null,
                 'gender' => $umat->gender,
+                'status' => $umat->status,
 
                 'chienkhun' => function () use ($umat) {
                     $umur = $umat->tgl_lahir ? Carbon::now()->year - Carbon::parse($umat->tgl_lahir)->year : null;
@@ -122,10 +132,11 @@ class DataumatController extends Controller
 
                     return null; // Jika tidak ada tanggal lahir
                 },
-                'kota_id' => $umat->kota_id,
+                // 'kota_id' => $umat->kota_id,
                 'kota_nama' => $umat->kota_id && isset($kotas[$umat->kota_id]) ? $kotas[$umat->kota_id]->nama_kota : 'Tidak Ada Kota',
-                'group_id' => $umat->group_id,
                 'group_nama' => $umat->group_id && isset($groups[$umat->group_id]) ? $groups[$umat->group_id]->nama_group : 'Tidak Ada Group',
+                // 'group_id' => $umat->group_id,
+                // 'group_nama' => $umat->group_id && isset($groups[$umat->group_id]) ? $groups[$umat->group_id]->nama_group : 'Tidak Ada Group',
                 'vihara_id' => $umat->vihara_id,
                 'vihara_nama' => $umat->vihara_id && isset($viharas[$umat->vihara_id]) ? $viharas[$umat->vihara_id]->nama_vihara : 'Tidak Ada Vihara',
                 'pandita_id' => $umat->pandita_id,
@@ -133,6 +144,7 @@ class DataumatController extends Controller
             ];
         });
         // Kirim data ke frontend via Inertia
+        // dd($dataumats->items());
         return Inertia::render('Dataumat/Index', [
             'dataumats' => $dataumats->items(),
             'kotas' => $kotas->values(),
@@ -151,28 +163,73 @@ class DataumatController extends Controller
 
 
     // Endpoint untuk mendapatkan groups berdasarkan kota_id
-    public function getGroupsByKota($kota_id)
+    public function getGroupsByKota(Request $request, $id)
     {
-        $groups = Group::where('kota_id', $kota_id)->get();
-        return response()->json($groups);
+        // echo ($request);
+        // dd($request);
+        $groups = Group::where('kota_id', $request->kota_id)->get();
+        $kotas = Kota::all();
+        return Inertia::render('Dataumat/Create', [
+
+            'kotas' => $kotas,
+            'groups' => $groups,
+            'kota_id' => $request->kota_id,
+        ]);
     }
 
     // Endpoint untuk mendapatkan viharas berdasarkan group_id
-    public function getViharasByGroup($group_id)
+
+    public function getViharasByGroup(Request $request, $group_id)
     {
         $viharas = Vihara::where('group_id', $group_id)->get();
-        return response()->json($viharas);
+        $kotas = Kota::all();
+        $panditas = Pandita::all();
+        return Inertia::render('Dataumat/Create', [
+            'kotas' => $kotas,
+            'panditas' => $panditas,
+            'viharas' => $viharas,
+        ]);
+    }
+    public function getGroupsByKotaEdit(Request $request, $id)
+    {
+        // echo ($request);
+        $groups = Group::where('kota_id', $request->kota_id)->get();
+        $kotas = Kota::all();
+        return Inertia::render('Dataumat/Edit', [
+
+            'kotas' => $kotas,
+            'groups' => $groups,
+            'kota_id' => $request->kota_id,
+        ]);
+    }
+
+    // Endpoint untuk mendapatkan viharas berdasarkan group_id
+
+    public function getViharasByGroupEdit(Request $request, $group_id)
+    {
+        $viharas = Vihara::where('group_id', $group_id)->get();
+        $kotas = Kota::all();
+        $groups = Group::all();
+        $panditas = Pandita::all();
+        return Inertia::render('Dataumat/Edit', [
+            'kotas' => $kotas,
+            'groups' => $groups,
+            'panditas' => $panditas,
+            'viharas' => $viharas,
+        ]);
     }
 
     // Menampilkan halaman tambah data
     public function create()
     {
-        $kotas = Kota::all();
+        // $kotas = Kota::all();
         $panditas = Pandita::all();
+        $viharas = Vihara::with(['group.kota'])->get();
 
         return inertia('Dataumat/Create', [
-            'kotas' => $kotas,
+            // 'kotas' => $kotas,
             'panditas' => $panditas,
+            'viharas' => $viharas,
         ]);
     }
     public function edit($id)
@@ -190,11 +247,14 @@ class DataumatController extends Controller
     // Menyimpan data baru
     public function store(Request $request)
     {
+        // dd($vihara->group->kota->id, $vihara->group_id);
         $request->validate($this->rules());
+        $vihara = Vihara::with('group.kota')->find($request->vihara_id);
         $data = new Dataumat();
-        $data->kota_id = $request->kota_id;
-        $data->group_id = $request->group_id;
+        $data->group_id = $vihara->group_id;
+        $data->kota_id = $vihara->group->kota->id;
         $data->vihara_id = $request->vihara_id;
+        $data->vihara_asal = $request->vihara_id;
         $data->pandita_id = $request->pandita_id;
         $data->tgl_lahir = $request->tgl_lahir;
         $data->nama_umat = $request->nama_umat;
@@ -203,7 +263,6 @@ class DataumatController extends Controller
         $data->gender = $request->gender;
         $data->tgl_mohonTao = $request->tgl_mohonTao;
         $data->alamat = $request->alamat;
-        $data->kota_id = $request->kota_id;
         $data->telp = $request->telp;
         $data->hp = $request->hp;
         $data->email = $request->email;
@@ -225,9 +284,10 @@ class DataumatController extends Controller
     {
 
         $request->validate($this->rules());
+        $vihara = Vihara::with('group.kota')->find($request->vihara_id);
         $data = Dataumat::findOrFail($id);
-        $data->kota_id = $request->kota_id;
-        $data->group_id = $request->group_id;
+        $data->kota_id = $vihara->group->kota->id;
+        $data->group_id = $vihara->group_id;
         $data->vihara_id = $request->vihara_id;
         $data->pandita_id = $request->pandita_id;
         $data->tgl_lahir = $request->tgl_lahir;

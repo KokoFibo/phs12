@@ -1,9 +1,10 @@
 <script setup>
+import Pagination from '@/components/Pagination.vue';
 import { router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
 import AppLayout from '@/layouts/AppLayout.vue';
-import { Link } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 
 const breadcrumbs = [
     {
@@ -32,7 +33,7 @@ function applyFilters() {
 </script>
 
 <template>
-    <Head title="Data Umat" />
+    <Head title="Kota" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
@@ -71,7 +72,7 @@ function applyFilters() {
                     </tr>
                 </tbody>
             </table>
+            <Pagination :links="kotas.links" />
         </div>
-        <pagination :links="kotas.links" />
     </AppLayout>
 </template>

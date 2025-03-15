@@ -13,4 +13,10 @@ class Vihara extends Model
     {
         return $this->belongsTo(Group::class);
     }
+
+    public function kota()
+    {
+        // return $this->hasOneThrough(Kota::class, Group::class, 'id', 'id', 'group_id', 'kota_id');
+        return $this->belongsTo(Group::class);
+    }
 }

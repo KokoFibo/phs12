@@ -1,13 +1,17 @@
 <script setup>
 import AppLayout from '@/layouts/AppLayout.vue';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, router, useForm } from '@inertiajs/vue3';
 
 const breadcrumbs = [
     {
-        title: 'Data Umat ',
-        href: '/dataumats',
+        title: 'Add Pandita ',
+        href: '/panditas',
     },
 ];
+
+function back() {
+    router.get('/panditas');
+}
 
 const form = useForm({
     nama_pandita: '',
@@ -21,11 +25,11 @@ function submit() {
 </script>
 
 <template>
-    <Head title="Data Umat" />
+    <Head title="Add Pandita" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-            <div class="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">
+            <div class="max-w-2xl py-6 sm:px-6 lg:px-8">
                 <form @submit.prevent="submit" class="space-y-4">
                     <div>
                         <label for="nama_pandita" class="block text-sm font-medium text-gray-700">Nama Pandita</label>
@@ -38,10 +42,14 @@ function submit() {
                         />
                         <p v-if="form.errors.nama_pandita" class="text-sm text-red-500">{{ form.errors.nama_pandita }}</p>
                     </div>
-
-                    <button type="submit" class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600" :disabled="form.processing">
-                        Simpan
-                    </button>
+                    <div class="flex justify-between">
+                        <button @click="back" class="rounded bg-gray-900 px-4 py-2 text-white hover:bg-gray-400" :disabled="form.processing">
+                            Back
+                        </button>
+                        <button type="submit" class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600" :disabled="form.processing">
+                            Save
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>

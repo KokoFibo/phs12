@@ -1,7 +1,7 @@
 <script setup>
 // import SimplePagination from '@/components/SimplePagination.vue';
 import Pagination from '@/components/Pagination.vue';
-import { Head, router } from '@inertiajs/vue3';
+import { router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
 import AppLayout from '@/layouts/AppLayout.vue';
@@ -9,45 +9,54 @@ import { Link } from '@inertiajs/vue3';
 
 const breadcrumbs = [
     {
-        title: 'Group',
-        href: '/groups',
+        title: 'Kota',
+        href: '/kotas',
     },
 ];
 // Props dari backend
 defineProps({
     groups: Object, // Daftar semua group dengan pagination
+    filters: Object, // Filter pencarian
 });
 
 // State untuk input search
 const search = ref('');
+// const search = ref(filters.search || '');
 const perPage = ref(10);
+// const groups = ref([]);
 
-async function fetchData() {
-    try {
-        const page = await new Promise((resolve, reject) => {
-            router.get(
-                '/groups',
-                {
-                    search: search.value,
-                    perPage: perPage.value,
-                },
-                {
-                    preserveState: true,
-                    onSuccess: resolve,
-                    onError: reject,
-                },
-            );
-        });
+function fetchData() {
+    router.get(
+        '/groups',
+        {
+            search: search.value,
+            perPage: perPage.value,
+        },
+        {
+            preserveState: true,
+            onSuccess: (page) => {
+                console.log('Data berhasil dimuat', page.props);
+            },
+        },
+    );
+}
 
-        console.log('Data berhasil dimuat', page.props);
-    } catch (error) {
-        console.error('Gagal memuat data:', error);
-    }
+// Fungsi untuk menerapkan filter pencarian
+function applyFilters() {
+    router.get(
+        '/groups',
+        {
+            search: search.value,
+        },
+        {
+            preserveState: true, // Tetap mempertahankan state halaman saat ini
+        },
+    );
 }
 </script>
 
 <template>
-    <Head title="Group" />
+    <Head title="Data Umat" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
@@ -60,7 +69,7 @@ async function fetchData() {
                             type="text"
                             placeholder="Cari..."
                             class="rounded border p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            @input="fetchData"
+                            @input="applyFilters"
                         />
                         <select
                             v-model="perPage"

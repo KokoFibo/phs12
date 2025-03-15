@@ -1,9 +1,10 @@
 <script setup>
 import AppLayout from '@/layouts/AppLayout.vue';
 import { ChevronLeftIcon, ChevronRightIcon, MagnifyingGlassIcon, PencilIcon, TrashIcon } from '@heroicons/vue/24/solid';
-import { router } from '@inertiajs/vue3';
+import { Head, router } from '@inertiajs/vue3';
 import debounce from 'lodash/debounce';
 import { onMounted, ref, watch } from 'vue';
+
 const breadcrumbs = [
     {
         title: 'Data Umat',
@@ -259,9 +260,6 @@ function deleteRecord(id) {
                             <td class="whitespace-normal px-4 py-2 text-sm" :class="getGenderClass(dataumat.chienkhun)">
                                 {{ dataumat.chienkhun }}
                             </td>
-                            <!-- <td class="whitespace-normal px-4 py-2 text-sm text-gray-500">
-                                {{ dataumat.chienkhun }}
-                            </td> -->
 
                             <td class="whitespace-normal px-4 py-2 text-sm text-gray-500">{{ dataumat.status }}</td>
                             <td class="whitespace-normal px-4 py-2 text-sm text-gray-500">
@@ -288,7 +286,7 @@ function deleteRecord(id) {
                             <div v-if="loading" class="py-4 text-center text-gray-500">Loading...</div>
                             <div v-else-if="selectedUmat" class="mt-4 grid grid-cols-1 gap-6 text-sm md:grid-cols-2">
                                 <!-- Kolom 1 -->
-                                <div class="text-sm leading-6">
+                                <div class="text-sm leading-8">
                                     <p><strong>ID:</strong> {{ selectedUmat.id }}</p>
                                     <p><strong>Nama:</strong> {{ selectedUmat.nama_umat }}</p>
                                     <p><strong>Alias:</strong> {{ selectedUmat.nama_alias }}</p>
@@ -302,13 +300,15 @@ function deleteRecord(id) {
                                     <p><strong>Group:</strong> {{ selectedUmat.group.nama_group }}</p>
 
                                     <p><strong>Alamat:</strong> {{ selectedUmat.alamat }}</p>
-                                    <p><strong>Keterangan:</strong> {{ selectedUmat.keterangan }}</p>
+                                    <p><strong>Keterangan:</strong> {{ selectedUmat.status }}</p>
                                 </div>
 
                                 <!-- Kolom 2 -->
-                                <div class="text-sm leading-6">
+                                <div class="text-sm leading-8">
                                     <p><strong>Kota:</strong> {{ selectedUmat.kota.nama_kota }}</p>
+                                    <!-- <p><strong>Kota:</strong> {{ selectedUmat.kota_nama }}</p> -->
                                     <p><strong>Group:</strong> {{ selectedUmat.group.nama_group }}</p>
+                                    <!-- <p><strong>Group:</strong> {{ selectedUmat.nama_group }}</p> -->
                                     <p><strong>Vihara:</strong> {{ selectedUmat.vihara.nama_vihara }}</p>
                                     <p><strong>Pandita:</strong> {{ selectedUmat.pandita.nama_pandita }}</p>
                                     <p><strong>HP:</strong> {{ selectedUmat.hp }}</p>

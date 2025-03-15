@@ -22,17 +22,17 @@ class DashboardController extends Controller
             ->count();
 
         $user_auth = Auth::user();
-        $kota = getNamaKota($user_auth->kota_id);
-        $group = getNamaGroup($user_auth->group_id);
-        $vihara = getNamaVihara($user_auth->vihara_id);
+
+        $vihara_id_default = $user_auth->vihara_id;
+        $pandita_id_default = $user_auth->pandita_id;
         return Inertia::render('Dashboard', [
             'totalUmat' => $totalUmat,
             'umatBulanIni' => $umatBulanIni,
             'auth' => [
                 'user' => $user_auth,
-                'kota' => $kota,
-                'group' => $group,
-                'vihara' => $vihara,
+                'vihara_id_default' => $vihara_id_default,
+                'pandita_id_default' => $pandita_id_default,
+
                 // Kirim data user ke Vue
             ],
         ]);

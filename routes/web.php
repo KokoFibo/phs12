@@ -12,8 +12,13 @@ use App\Http\Controllers\TambahanController;
 use App\Models\Dataumat;
 
 Route::get('/groups-by-kota/{kota_id}', [DataumatController::class, 'getGroupsByKota'])->name('groups.by.kota');
-Route::get('/viharas-by-group/{group_id}', [DataumatController::class, 'getViharasByGroup'])->name('viharas.by.group');
+// Route::post('/groups-by-kota', [DataumatController::class, 'getGroupsByKota'])->name('groups.by.kota');
+Route::get('/viharas-by-group/{group}', [DataumatController::class, 'getViharasByGroup'])->name('viharas.by.group');
 
+Route::get('/groups-by-kota-edit/{kota_id}', [DataumatController::class, 'getGroupsByKotaEdit'])->name('groups.by.kota.edit');
+Route::get('/viharas-by-group-edit/{group}', [DataumatController::class, 'getViharasByGroupEdit'])->name('viharas.by.group.edit');
+
+Route::get('/test', [DataumatController::class, 'test']);
 Route::get('/', function () {
     return Inertia::render('Welcome');
 })->name('home');

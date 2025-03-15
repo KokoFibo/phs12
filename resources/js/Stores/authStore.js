@@ -3,31 +3,40 @@ import { ref } from 'vue';
 
 export const useAuthStore = defineStore('auth', () => {
     const user = ref(null);
-    const kota = ref('');
-    const group = ref('');
-    const vihara = ref('');
-    const pandita = ref('');
-    const panditaDefault = ref(true);
-    const setviharaSendiri = ref(true);
-    const unlock = ref('false');
-    const unlockPandita = ref('true');
 
-    function setUnlock(data) {
-        unlock.value = data;
-    }
-    function setUnlockPandita(data) {
-        unlockPandita.value = data;
-    }
-    function setKota(data) {
-        kota.value = data;
+    // const vihara = ref('');
+    const vihara_id = ref('');
+    const pandita_id = ref('');
+    const lock_vihara = ref('true');
+    const lock_pandita = ref('true');
+    const vihara_id_default = ref('true');
+    const pandita_id_default = ref('true');
+    const vihara_default = ref(true);
+
+    function setViharaDefault(data) {
+        vihara_default.value = data;
     }
 
-    function setGroup(data) {
-        group.value = data;
+    function setPanditaIdDefault(data) {
+        pandita_id_default.value = data;
+    }
+    function setViharaIdDefault(data) {
+        vihara_id_default.value = data;
     }
 
-    function setVihara(data) {
-        vihara.value = data;
+    function setViharaId(data) {
+        vihara_id.value = data;
+    }
+
+    function setPanditaId(data) {
+        pandita_id.value = data;
+    }
+
+    function setLockVihara(data) {
+        lockVihara.value = data;
+    }
+    function setLockPandita(data) {
+        lockPandita.value = data;
     }
 
     function setUser(data) {
@@ -39,30 +48,30 @@ export const useAuthStore = defineStore('auth', () => {
 
     function toggleVihara() {
         setviharaSendiri.value = !setviharaSendiri.value;
-        // if (setviharaSendiri.value) {
-        //     // unlockPandita.value = false;
-        //     unlock.value = false;
-        // }
     }
-    function togglePandita() {
-        panditaDefault.value = !panditaDefault.value;
-    }
+    // function togglePandita() {
+    //     panditaDefault.value = !panditaDefault.value;
+    // }
 
     return {
         user,
         setUser,
-        kota,
-        setKota,
-        group,
-        setGroup,
-        vihara,
-        setVihara,
-        setviharaSendiri,
+        vihara_id,
+        setViharaId,
+
+        pandita_id,
+        setPanditaId,
+
         toggleVihara,
-        panditaDefault,
-        unlockPandita,
-        unlock,
-        setUnlock,
-        setUnlockPandita,
+        lock_vihara,
+        setLockVihara,
+        lock_pandita,
+        setLockPandita,
+        pandita_id_default,
+        setPanditaIdDefault,
+        vihara_id_default,
+        setViharaIdDefault,
+        vihara_default,
+        setViharaDefault,
     };
 });
