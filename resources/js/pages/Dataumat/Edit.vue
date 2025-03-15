@@ -1,8 +1,9 @@
 <script setup>
-import { router, useForm } from '@inertiajs/vue3';
+import DropdownPandita from '@/components/DropdownPandita.vue';
+import DropdownVihara from '@/components/DropdownVihara.vue';
 
 import AppLayout from '@/layouts/AppLayout.vue';
-import { ref, watch } from 'vue';
+import { Head, router, useForm } from '@inertiajs/vue3';
 
 const breadcrumbs = [
     {
@@ -44,56 +45,74 @@ const form = useForm({
     keterangan: props.dataumat.keterangan,
 });
 
-const groups = ref([]);
-const viharas = ref([]);
-console.log('group', props.dataumat.group_id);
-console.log('vihara', props.dataumat.vihara_id);
+// const groups = ref([]);
+// const viharas = ref([]);
+// const panditas = ref([]);
+// console.log('group', props.dataumat.group_id);
+// console.log('vihara', props.dataumat.vihara_id);
+
+function back() {
+    router.get('/dataumats');
+}
 
 // Watch untuk memperbarui groups saat kota_id berubah
-watch(
-    () => form.kota_id,
-    async (newKotaId) => {
-        if (newKotaId) {
-            try {
-                const response = await fetch(route('groups.by.kota', newKotaId));
-                const data = await response.json();
-                groups.value = data;
-                form.group_id = props.dataumat.group_id; // Reset group_id
-                viharas.value = []; // Reset viharas
-                // form.vihara_id = ''; // Reset vihara_id
-            } catch (error) {
-                console.error('Error fetching groups:', error);
-            }
-        } else {
-            groups.value = [];
-            viharas.value = [];
-            form.group_id = '';
-            form.vihara_id = '';
-        }
-    },
-    { immediate: true },
-);
+// watch(
+//     () => form.kota_id,
+//     (newKotaId) => {
+//         if (newKotaId) {
+//             router.get(
+//                 route('groups.by.kota.edit', newKotaId),
+//                 {},
+//                 {
+//                     preserveState: true,
+//                     preserveScroll: true,
+//                     // only: ['groups'],
+//                     onSuccess: ({ props }) => {
+//                         groups.value = props.groups;
+//                         form.group_id = props.dataumat.group_id; // Reset group_id
+//                         viharas.value = []; // Reset viharas
+//                     },
+//                     onError: (error) => {
+//                         console.error('Error fetching groups:', error);
+//                     },
+//                 },
+//             );
+//         } else {
+//             groups.value = [];
+//             viharas.value = [];
+//             form.group_id = '';
+//             form.vihara_id = '';
+//         }
+//     },
+//     // { immediate: true },
+// );
 
 // Watch untuk memperbarui viharas saat group_id berubah
-watch(
-    () => form.group_id,
-    async (newGroupId) => {
-        if (newGroupId) {
-            try {
-                const response = await fetch(route('viharas.by.group', newGroupId));
-                const data = await response.json();
-                viharas.value = data;
-                // form.vihara_id = ''; // Reset vihara_id
-            } catch (error) {
-                console.error('Error fetching viharas:', error);
-            }
-        } else {
-            viharas.value = [];
-            form.vihara_id = '';
-        }
-    },
-    { immediate: true },
-);
+// watch(
+//     () => form.group_id,
+//     (newGroupId) => {
+//         if (newGroupId) {
+//             router.get(
+//                 route('viharas.by.group.edit', newGroupId),
+//                 {},
+//                 {
+//                     preserveState: true,
+//                     preserveScroll: true,
+//                     only: ['viharas'],
+//                     onSuccess: ({ props }) => {
+//                         viharas.value = props.viharas;
+//                     },
+//                     onError: (error) => {
+//                         console.error('Error fetching viharas:', error);
+//                     },
+//                 },
+//             );
+//         } else {
+//             viharas.value = [];
+//             form.vihara_id = '';
+//         }
+//     },
+// );
 
 function submit() {
     router.put(`/dataumats/${props.dataumat.id}`, form, {
@@ -108,11 +127,21 @@ function submit() {
     <Head title="Edit Data Umat" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="mx-auto mt-3 max-w-7xl rounded-lg border py-6 sm:px-6 lg:px-8">
+        <div class="mx-auto mt-3 max-w-7xl rounded-lg border py-6 text-sm sm:px-6 lg:px-8">
+            <!-- <p>form.kota_id: {{ form.kota_id }}</p>
+            <p>form.group_id: {{ form.group_id }}</p>
+            <p>form.vihara_id: {{ form.vihara_id }}</p>
+            <p>form.pandita_id: {{ form.pandita_id }}</p> -->
             <form @submit.prevent="submit" class="space-y-6">
                 <!-- Pilihan Kota, Group, Vihara, Pandita -->
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
                     <div>
+                        <DropdownVihara v-model="form.vihara_id" :viharas="viharas" :errors="errors" class="mt-1" />
+                    </div>
+                    <div>
+                        <DropdownPandita v-model="form.pandita_id" :panditas="panditas" :errors="errors" class="mt-1" />
+                    </div>
+                    <!-- <div>
                         <label for="kota_id" class="block text-sm font-medium text-gray-700">Kota</label>
                         <select
                             v-model="form.kota_id"
@@ -138,9 +167,9 @@ function submit() {
                             <option v-for="group in groups" :key="group.id" :value="group.id">{{ group.nama_group }}</option>
                         </select>
                         <p v-if="errors.group_id" class="text-sm text-red-500">{{ errors.group_id }}</p>
-                    </div>
+                    </div> -->
 
-                    <div>
+                    <!-- <div>
                         <label for="vihara_id" class="block text-sm font-medium text-gray-700">Vihara</label>
                         <select
                             v-model="form.vihara_id"
@@ -152,9 +181,9 @@ function submit() {
                             <option v-for="vihara in viharas" :key="vihara.id" :value="vihara.id">{{ vihara.nama_vihara }}</option>
                         </select>
                         <p v-if="errors.vihara_id" class="text-sm text-red-500">{{ errors.vihara_id }}</p>
-                    </div>
+                    </div> -->
 
-                    <div>
+                    <!-- <div>
                         <label for="pandita_id" class="block text-sm font-medium text-gray-700">Pandita</label>
                         <select
                             v-model="form.pandita_id"
@@ -166,11 +195,11 @@ function submit() {
                             <option v-for="pandita in panditas" :key="pandita.id" :value="pandita.id">{{ pandita.nama_pandita }}</option>
                         </select>
                         <p v-if="errors.pandita_id" class="text-sm text-red-500">{{ errors.pandita_id }}</p>
-                    </div>
+                    </div> -->
                 </div>
 
                 <!-- Form Input Lainnya -->
-                <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <div class="grid grid-cols-1 gap-4 text-sm md:grid-cols-2 lg:grid-cols-4">
                     <div>
                         <label for="nama_umat" class="block text-sm font-medium text-gray-700">Nama Umat</label>
                         <input
@@ -362,7 +391,10 @@ function submit() {
                 </div>
 
                 <!-- Tombol Simpan -->
-                <div class="flex justify-end space-x-4">
+                <div class="flex justify-between">
+                    <button @click="kembali" class="rounded bg-gray-900 px-4 py-2 text-white hover:bg-gray-400" :disabled="form.processing">
+                        Back
+                    </button>
                     <button type="submit" class="rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600" :disabled="form.processing">
                         Update
                     </button>

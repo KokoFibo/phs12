@@ -14,6 +14,9 @@ class GroupController extends Controller
     // Menampilkan halaman index group
     public function index(Request $request)
     {
+        if ($request->perPage == '') $perPage = 10;
+        else $perPage = $request->perPage;
+
         $query = Group::query()->with('kota'); // Load relasi kota
 
         // Search berdasarkan nama_group atau nama_kota
@@ -27,11 +30,11 @@ class GroupController extends Controller
         }
 
         // Pagination
-        $groups = $query->paginate(10);
+        $groups = $query->paginate($perPage);
 
         return inertia('Group/Index', [
             'groups' => $groups,
-            'filters' => $request->only(['search']),
+            // 'filters' => $request->only(['search']),
         ]);
     }
 

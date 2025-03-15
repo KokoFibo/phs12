@@ -11,7 +11,13 @@ class Group extends Model
     // Relasi ke tabel kotas
     public function kota()
     {
-        // return $this->belongsTo(Kota::class);
-        return $this->belongsTo(Kota::class, 'kota_id', 'id');
+        return $this->belongsTo(Kota::class);
+        // return $this->belongsTo(Kota::class, 'kota_id', 'id');
+    }
+
+
+    public function viharas()
+    {
+        return $this->hasMany(Vihara::class);
     }
 }

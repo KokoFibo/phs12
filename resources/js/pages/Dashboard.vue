@@ -17,11 +17,14 @@ const props = defineProps({
 // if (!userStore.user) {
 //     userStore.setUser(props.auth?.user || null);
 // }
-console.log(props.kota);
+console.log('pandita_id: ', props.auth.pandita_id);
 userStore.setUser(props.auth?.user || null);
-userStore.setKota(props.auth.kota);
-userStore.setGroup(props.auth.group);
-userStore.setVihara(props.auth.vihara);
+// userStore.setKota(props.auth.kota);
+// userStore.setGroup(props.auth.group);
+userStore.setPanditaIdDefault(props.auth.pandita_id_default);
+userStore.setViharaIdDefault(props.auth.vihara_id_default);
+userStore.setPanditaId(props.auth.pandita_id_default);
+userStore.setViharaId(props.auth.vihara_id_default);
 
 const breadcrumbs = [
     {

@@ -1,21 +1,9 @@
 <script setup>
-import DropdownPandita from '@/components/DropdownPandita.vue';
-import DropdownVihara from '@/components/DropdownVihara.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { useAuthStore } from '@/Stores/authStore';
-import { Head, router, useForm } from '@inertiajs/vue3';
-import { onMounted, ref, watch } from 'vue';
+import { useForm } from '@inertiajs/vue3';
+import { ref, watch } from 'vue';
 
-const searchQuery = ref('');
-const isOpen = ref(false);
-// Filter dropdown berdasarkan pencarian
-// const filteredViharas = computed(() => props.viharas.filter((vihara) => vihara.nama_vihara.toLowerCase().includes(searchQuery.value.toLowerCase())));
-
-// Ambil nama vihara yang terpilih
-// const selectedVihara = computed(() => {
-//     const vihara = props.viharas.find((v) => v.id === form.vihara_id);
-//     return vihara ? vihara.nama_vihara : 'Pilih Vihara';
-// });
 const userStore = useAuthStore();
 
 const breadcrumbs = [
@@ -57,47 +45,49 @@ const form = useForm({
     keterangan: '',
 });
 
+if (userStore.setviharaSendiri === true) {
+    form.kota_id = userStore.user.kota_id;
+    form.group_id = userStore.user.group_id;
+    form.vihara_id = userStore.user.vihara_id;
+    form.pandita_id = userStore.user.pandita_id;
+}
+// console.log(userStore.setviharaSendiri);
 function clearData() {
     form.reset();
 }
 
-const lockPandita = ref(userStore.lock_pandita);
-const lockVihara = ref(userStore.lock_vihara);
+// State untuk menyimpan daftar groups dan viharas
+// const kotas = ref([]);
+// const groups = ref([]);
+// const viharas = ref([]);
+const lockPandita = ref(userStore.lockPandita);
+const lockVihara = ref(userStore.lockVihara);
 
-onMounted(() => {
-    form.vihara_id = userStore.vihara_id;
-    form.pandita_id = userStore.pandita_id;
-}),
-    watch(
-        () => form.vihara_id, // Perubahan yang dipantau
-        (newValue) => {
-            if (newValue) {
-                // userStore.setViharaId = newValue;
-                userStore.setViharaId(newValue || null);
-            }
-        },
-    ),
-    watch(
-        () => form.pandita_id, // Perubahan yang dipantau
-        (newValue) => {
-            if (newValue) {
-                // userStore.setPanditaId = newValue;
-                userStore.setPanditaId(newValue || null);
-            }
-        },
-    );
+// watch(lockPandita, (newValue) => {
+//     userStore.setLockPandita(newValue); // ✅ Memanggil setter dengan nilai baru
+// });
+// watch(lockVihara, (newValue) => {
+//     userStore.setLock(newValue); // ✅ Memanggil setter dengan nilai baru
+// });
 
 watch(
-    () => userStore.vihara_default,
+    () => userStore.lockVihara, // Perubahan yang dipantau
     (newValue) => {
         if (newValue) {
-            userStore.setViharaId(userStore.vihara_id_default);
-            form.vihara_id = userStore.vihara_id_default;
-            userStore.setPanditaId(userStore.pandita_id_default);
-            form.pandita_id = userStore.pandita_id_default;
-        } else {
-            userStore.setViharaId(form.vihara_id);
-            userStore.setPanditaId(form.pandita_id);
+            userStore.setLock(false); // Reset lock jika setviharaSendiri aktif
+            lockVihara.value = false;
+            form.pandita_id = userStore.user.pandita_id;
+        }
+    },
+);
+
+watch(
+    () => userStore.lockPandita, // Perubahan yang dipantau
+    (newValue) => {
+        if (newValue) {
+            userStore.setLock(false); // Reset lock jika setviharaSendiri aktif
+            lockPandita.value = false;
+            form.pandita_id = userStore.user.pandita_id;
         }
     },
 );
@@ -107,41 +97,67 @@ function submit() {
         onSuccess: () => form.reset(),
     });
 }
-function back() {
-    router.get('/dataumats');
-}
 </script>
 
 <template>
-    <Head title="Add Data Umat" />
+    <Head title="Tambah Data Umat" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="mx-auto mt-3 max-w-7xl rounded-lg border py-6 sm:px-6 lg:px-8">
-            <!-- <p>form.vihara_id : {{ form.vihara_id }}</p>
-            <p>form.pandita_id : {{ form.pandita_id }}</p> -->
+            <p>lockPandita: {{ lockPandita }}</p>
+            <p>lockVihara: {{ userStore.lockVihara }}</p>
+            <p>form.kota_id : {{ form.kota_id }}</p>
             <form @submit.prevent="submit" class="space-y-6">
-                <div class="flex items-center">
+                <div class="flex items-center" :class="userStore.setviharaSendiri ? 'justify-between' : 'justify-between'">
                     <div>
                         <label class="inline-flex cursor-pointer items-center">
-                            <input type="checkbox" v-model="userStore.vihara_default" />
-                            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Input vihara sendiri</span>
+                            <input type="checkbox" value="" class="peer sr-only" v-model="userStore.lockVihara" />
+                            <div
+                                class="peer relative h-6 w-11 rounded-full bg-gray-200 after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:peer-checked:bg-blue-600 dark:peer-focus:ring-blue-800 rtl:peer-checked:after:-translate-x-full"
+                            ></div>
+                            <span v-if="userStore.lockVihara" class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Vihara Locked</span>
+                            <span v-else class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Vihara Unlocked</span>
+                        </label>
+                    </div>
+                    <div>
+                        <label class="inline-flex cursor-pointer items-center">
+                            <input type="checkbox" class="peer sr-only" v-model="lockPandita" />
+                            <div
+                                class="peer relative h-6 w-11 rounded-full bg-gray-200 after:absolute after:start-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:bg-blue-600 peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:border-gray-600 dark:bg-gray-700 dark:peer-checked:bg-blue-600 dark:peer-focus:ring-blue-800 rtl:peer-checked:after:-translate-x-full"
+                            ></div>
+                            <span v-if="lockPandita" class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Pandita locked</span>
+                            <span v-else class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300">Pandita Unlocked</span>
                         </label>
                     </div>
                 </div>
 
-                <div v-if="userStore.vihara_default" class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-2">
+                <!-- <div v-if="userStore.setviharaSendiri" class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
                     <div>
-                        <label for="pandita_id" class="block text-sm font-medium text-gray-700">Vihara</label>
-                        <select
-                            v-model="form.vihara_id"
-                            id="pandita_id"
+                        <label for="nama_umat" class="block text-sm font-medium text-gray-700">Vihara</label>
+                        <input
+                            disabled
+                            :value="userStore.vihara"
+                            type="text"
                             class="mt-1 block w-full rounded-md border border-gray-300 p-2 text-sm shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-                            :disabled="lockVihara"
-                        >
-                            <option value="" disabled>Pilih Vihara</option>
-                            <option v-for="vihara in viharas" :key="vihara.id" :value="vihara.id">{{ vihara.nama_vihara }}</option>
-                        </select>
-                        <p v-if="errors.vihara_id" class="text-sm text-red-500">{{ errors.vihara_id }}</p>
+                        />
+                    </div>
+                    <div>
+                        <label for="nama_umat" class="block text-sm font-medium text-gray-700">Kota</label>
+                        <input
+                            disabled
+                            :value="userStore.kota"
+                            type="text"
+                            class="mt-1 block w-full rounded-md border border-gray-300 p-2 text-sm shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+                        />
+                    </div>
+                    <div>
+                        <label for="nama_umat" class="block text-sm font-medium text-gray-700">Group</label>
+                        <input
+                            disabled
+                            :value="userStore.group"
+                            type="text"
+                            class="mt-1 block w-full rounded-md border border-gray-300 p-2 text-sm shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+                        />
                     </div>
                     <div>
                         <label for="pandita_id" class="block text-sm font-medium text-gray-700">Pandita</label>
@@ -156,27 +172,53 @@ function back() {
                         </select>
                         <p v-if="errors.pandita_id" class="text-sm text-red-500">{{ errors.pandita_id }}</p>
                     </div>
-                </div>
-                <div v-else class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-2">
+                </div> -->
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
                     <div>
-                        <DropdownVihara v-model="form.vihara_id" :viharas="viharas" :errors="errors" class="mt-1" />
+                        <label for="vihara_id" class="block text-sm font-medium text-gray-700">Vihara</label>
+                        <select
+                            v-model="form.vihara_id"
+                            id="vihara_id"
+                            class="mt-1 block w-full rounded-md border border-gray-300 p-2 text-sm shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+                            :disabled="userStore.lockVihara"
+                        >
+                            <option value="" disabled>Pilih Vihara</option>
+                            <option v-for="vihara in viharas" :key="vihara.id" :value="vihara.id">{{ vihara.nama_vihara }}</option>
+                        </select>
+                        <p v-if="errors.vihara_id" class="text-sm text-red-500">{{ errors.vihara_id }}</p>
                     </div>
                     <div>
-                        <DropdownPandita v-model="form.pandita_id" :panditas="panditas" :errors="errors" class="mt-1" />
+                        <label for="nama_umat" class="block text-sm font-medium text-gray-700">Kota</label>
+                        <input
+                            disabled
+                            :value="userStore.kota"
+                            type="text"
+                            class="mt-1 block w-full rounded-md border border-gray-300 p-2 text-sm shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+                        />
+                    </div>
+                    <div>
+                        <label for="nama_umat" class="block text-sm font-medium text-gray-700">Group</label>
+                        <input
+                            disabled
+                            :value="userStore.group"
+                            type="text"
+                            class="mt-1 block w-full rounded-md border border-gray-300 p-2 text-sm shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+                        />
                     </div>
 
-                    <!-- <div>
+                    <div>
                         <label for="pandita_id" class="block text-sm font-medium text-gray-700">Pandita</label>
                         <select
                             v-model="form.pandita_id"
                             id="pandita_id"
                             class="mt-1 block w-full rounded-md border border-gray-300 p-2 text-sm shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+                            :disabled="lockPandita"
                         >
                             <option value="" disabled>Pilih Pandita</option>
                             <option v-for="pandita in panditas" :key="pandita.id" :value="pandita.id">{{ pandita.nama_pandita }}</option>
                         </select>
                         <p v-if="errors.pandita_id" class="text-sm text-red-500">{{ errors.pandita_id }}</p>
-                    </div> -->
+                    </div>
                 </div>
 
                 <!-- Form Input Lainnya -->
@@ -372,20 +414,22 @@ function back() {
                 </div>
                 <div class="flex justify-between">
                     <!-- Tombol Keluar -->
-                    <div>
-                        <button @click="back" class="rounded bg-gray-900 px-4 py-2 text-white hover:bg-gray-400" :disabled="form.processing">
-                            Back
-                        </button>
+                    <div class="flex justify-end space-x-4">
+                        <Link :href="route('dataumats.index')">
+                            <button class="rounded bg-gray-800 px-4 py-2 text-sm text-white hover:bg-gray-800" :disabled="form.processing">
+                                Keluar
+                            </button>
+                        </Link>
                     </div>
 
                     <!-- Tombol Simpan -->
-                    <div>
+                    <div class="flex justify-end space-x-4">
                         <button
                             type="submit"
                             class="rounded bg-green-500 px-4 py-2 text-sm text-white hover:bg-green-600"
                             :disabled="form.processing"
                         >
-                            Save
+                            Simpan
                         </button>
                     </div>
                 </div>

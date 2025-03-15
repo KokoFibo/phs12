@@ -1,7 +1,7 @@
 <script setup>
 import { TransitionRoot } from '@headlessui/vue';
 import { Head, useForm, usePage } from '@inertiajs/vue3';
-import { ref, watch } from 'vue';
+import { watch } from 'vue';
 
 import HeadingSmall from '@/components/HeadingSmall.vue';
 import { Button } from '@/components/ui/button';
@@ -18,29 +18,19 @@ const breadcrumbs = [
 
 // Inertia Page data
 const page = usePage();
-// const user = page.props.user; // Ambil user data dari Inertia props
-// const kotas = page.props.kotas; // Ambil kotas data dari Inertia props
-// const groups = ref(page.props.groups); // Ambil groups data dari Inertia props
-// const viharas = ref(page.props.viharas); // Ambil viharas data dari Inertia props
-// const panditas = ref(page.props.panditas);
-// Ambil panditas data dari Inertia props
+
 const props = defineProps({
     user: Object,
-    kotas: Array,
-    groups: Array,
     viharas: Array,
     panditas: Array,
     errors: Object,
 });
 // Form data
 const form = useForm({
-    kota_id: props.user.kota_id,
-    group_id: props.user.group_id,
     vihara_id: props.user.vihara_id,
     pandita_id: props.user.pandita_id,
 });
-const groups = ref([]);
-const viharas = ref([]);
+
 // Watcher untuk perubahan pada kota_id
 watch(
     () => form.kota_id,
@@ -75,7 +65,6 @@ watch(
                 const response = await fetch(route('viharas.by.group', newGroupId));
                 const data = await response.json();
                 viharas.value = data;
-                // form.vihara_id = ''; // Reset vihara_id
             } catch (error) {
                 console.error('Error fetching viharas:', error);
             }
@@ -105,34 +94,6 @@ const submit = () => {
 
                 <form @submit.prevent="submit" class="space-y-6">
                     <div class="grid grid-cols-1 gap-4 text-sm md:grid-cols-2 lg:grid-cols-2">
-                        <div>
-                            <label for="kota_id" class="block text-sm font-medium text-gray-700">Kota</label>
-                            <select
-                                v-model="form.kota_id"
-                                id="kota_id"
-                                class="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-                                required
-                            >
-                                <option value="" disabled>Pilih Kota</option>
-                                <option v-for="kota in kotas" :key="kota.id" :value="kota.id">{{ kota.nama_kota }}</option>
-                            </select>
-                            <p v-if="errors.kota_id" class="text-sm text-red-500">{{ errors.kota_id }}</p>
-                        </div>
-
-                        <div>
-                            <label for="group_id" class="block text-sm font-medium text-gray-700">Group</label>
-                            <select
-                                v-model="form.group_id"
-                                id="group_id"
-                                class="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-                                required
-                            >
-                                <option value="" disabled>Pilih Group</option>
-                                <option v-for="group in groups" :key="group.id" :value="group.id">{{ group.nama_group }}</option>
-                            </select>
-                            <p v-if="errors.group_id" class="text-sm text-red-500">{{ errors.group_id }}</p>
-                        </div>
-
                         <div>
                             <label for="vihara_id" class="block text-sm font-medium text-gray-700">Vihara</label>
                             <select
