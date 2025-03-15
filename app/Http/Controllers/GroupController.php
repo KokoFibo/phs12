@@ -57,7 +57,11 @@ class GroupController extends Controller
 
         Group::create($validated);
 
-        return redirect()->route('groups.index')->with('success', 'Data Group berhasil ditambahkan.');
+        // return redirect()->route('groups.index')->with('success', 'Data Group berhasil ditambahkan.');
+        return redirect()->route('groups.index')->with('toast', [
+            'type' => 'success',
+            'message' => 'Data Group berhasil ditambahkan.',
+        ]);
     }
 
 
@@ -83,7 +87,11 @@ class GroupController extends Controller
 
         $group->update($validated);
 
-        return redirect()->route('groups.index')->with('success', 'Data Group berhasil diperbarui.');
+        // return redirect()->route('groups.index')->with('success', 'Data Group berhasil diperbarui.');
+        return redirect()->route('groups.index')->with('toast', [
+            'type' => 'success',
+            'message' => 'Data Group berhasil diperbarui.',
+        ]);
     }
 
 
@@ -92,6 +100,10 @@ class GroupController extends Controller
     {
         $group->delete();
 
-        return redirect()->route('groups.index')->with('success', 'Data Group berhasil dihapus.');
+        // return redirect()->route('groups.index')->with('success', 'Data Group berhasil dihapus.');
+        return redirect()->route('groups.index')->with('toast', [
+            'type' => 'success',
+            'message' => 'Data Group berhasil dihapus.',
+        ]);
     }
 }

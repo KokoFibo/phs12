@@ -5,8 +5,29 @@ import { Head, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 
 import AppLayout from '@/layouts/AppLayout.vue';
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
+import { watch } from 'vue';
+import { useToast } from 'vue-toastification';
 
+const toast = useToast();
+const page = usePage();
+
+const confirmDelete = (id) => {
+    if (window.confirm('Apakah yakin ingin menghapus data ini?')) {
+        router.delete(route('groups.destroy', id));
+    }
+};
+
+// Pantau flash message dari Laravel
+watch(
+    () => page.props.flash.toast,
+    (flash) => {
+        if (flash?.message) {
+            toast[flash.type ?? 'info'](flash.message);
+        }
+    },
+    { immediate: true },
+);
 const breadcrumbs = [
     {
         title: 'Group',
@@ -96,11 +117,14 @@ async function fetchData() {
                                 >
                                     Edit
                                 </Link>
-                                <button
+                                <!-- <button
                                     @click="router.delete(route('groups.destroy', group.id))"
                                     class="rounded bg-red-500 px-3 py-1 text-sm text-white hover:bg-red-600"
                                 >
                                     Hapus
+                                </button> -->
+                                <button @click="confirmDelete(group.id)" class="rounded bg-red-500 px-3 py-1 text-sm text-white hover:bg-red-600">
+                                    Delete
                                 </button>
                             </td>
                         </tr>

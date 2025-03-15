@@ -9,10 +9,6 @@ import { createApp, h } from 'vue';
 import { ZiggyVue } from 'ziggy-js';
 import { initializeTheme } from './composables/useAppearance';
 
-// Import Vue Toastification
-import Toast from 'vue-toastification';
-import 'vue-toastification/dist/index.css';
-
 declare module 'vite/client' {
     interface ImportMetaEnv {
         readonly VITE_APP_NAME: string;
@@ -36,13 +32,7 @@ createInertiaApp({
 
         app.use(plugin)
             .use(pinia) // Gunakan Pinia di aplikasi Vue
-            .use(ZiggyVue)
-            .use(Toast, {
-                position: 'top-right',
-                timeout: 3000,
-                closeOnClick: true,
-                pauseOnHover: true,
-            });
+            .use(ZiggyVue);
 
         // Simpan data user ke Pinia hanya sekali saat aplikasi dimulai
         const authStore = useAuthStore();

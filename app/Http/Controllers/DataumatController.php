@@ -18,10 +18,11 @@ class DataumatController extends Controller
 
     public function test()
     {
-        $viharas = Vihara::with(['group.kota'])->get();
-        foreach ($viharas as $vihara) {
-            echo "Vihara: {$vihara->nama_vihara}, Group: {$vihara->group->nama_group}, Kota: {$vihara->group->kota->nama_kota} <br>";
-        }
+        $data = Dataumat::whereNull('group_id')
+            ->get();
+
+
+        dd('done');
     }
 
     public function detail($id)
@@ -275,7 +276,11 @@ class DataumatController extends Controller
         $data->status = $request->status;
         $data->keterangan = $request->keterangan;
         $data->save();
-        return redirect()->route('dataumats.index')->with('success', 'Data Umat berhasil ditambahkan.');
+        // return redirect()->route('dataumats.index')->with('success', 'Data Umat berhasil ditambahkan.');
+        return redirect()->route('dataumats.index')->with('toast', [
+            'type' => 'success',
+            'message' => 'Data Umat berhasil ditambahkan!',
+        ]);
     }
 
 
@@ -310,7 +315,11 @@ class DataumatController extends Controller
         $data->status = $request->status;
         $data->keterangan = $request->keterangan;
         $data->save();
-        return redirect()->route('dataumats.index')->with('success', 'Data Umat berhasil diperbarui.');
+        // return redirect()->route('dataumats.index')->with('success', 'Data Umat berhasil diperbarui.');
+        return redirect()->route('dataumats.index')->with('toast', [
+            'type' => 'success',
+            'message' => 'Data Umat berhasil diperbarui.',
+        ]);
     }
 
     // Menghapus data
@@ -318,6 +327,10 @@ class DataumatController extends Controller
     {
         $dataumat->delete();
 
-        return redirect()->route('dataumats.index')->with('success', 'Data Umat berhasil dihapus.');
+        // return redirect()->route('dataumats.index')->with('success', 'Data Umat berhasil dihapus.');
+        return redirect()->route('dataumats.index')->with('toast', [
+            'type' => 'success',
+            'message' => 'Data Umat berhasil dihapus.',
+        ]);
     }
 }

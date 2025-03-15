@@ -41,7 +41,11 @@ class PanditaController extends Controller
 
         Pandita::create($validated);
 
-        return redirect()->route('panditas.index')->with('success', 'Data Pandita berhasil ditambahkan.');
+        // return redirect()->route('panditas.index')->with('success', 'Data Pandita berhasil ditambahkan.');
+        return redirect()->route('panditas.index')->with('toast', [
+            'type' => 'success',
+            'message' => 'Data Pandita berhasil ditambahkan.',
+        ]);
     }
 
     // Menampilkan halaman edit data
@@ -61,7 +65,11 @@ class PanditaController extends Controller
 
         $pandita->update($validated);
 
-        return redirect()->route('panditas.index')->with('success', 'Data Pandita berhasil diperbarui.');
+        // return redirect()->route('panditas.index')->with('success', 'Data Pandita berhasil diperbarui.');
+        return redirect()->route('panditas.index')->with('toast', [
+            'type' => 'success',
+            'message' => 'Data Pandita berhasil diperbarui.',
+        ]);
     }
 
     // Menghapus data
@@ -69,6 +77,9 @@ class PanditaController extends Controller
     {
         $pandita->delete();
 
-        return redirect()->route('panditas.index')->with('success', 'Data Pandita berhasil dihapus.');
+        return redirect()->route('panditas.index')->with('toast', [
+            'type' => 'success',
+            'message' => 'Data Pandita berhasil dihapus.',
+        ]);
     }
 }

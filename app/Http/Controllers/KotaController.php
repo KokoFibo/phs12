@@ -41,7 +41,11 @@ class KotaController extends Controller
 
         Kota::create($validated);
 
-        return redirect()->route('kotas.index')->with('success', 'Data Kota berhasil ditambahkan.');
+        // return redirect()->route('kotas.index')->with('success', 'Data Kota berhasil ditambahkan.');
+        return redirect()->route('kotas.index')->with('toast', [
+            'type' => 'success',
+            'message' => 'Data Kota berhasil ditambahkan.',
+        ]);
     }
 
     // Menampilkan halaman edit data
@@ -61,7 +65,11 @@ class KotaController extends Controller
 
         $kota->update($validated);
 
-        return redirect()->route('kotas.index')->with('success', 'Data Kota berhasil diperbarui.');
+        // return redirect()->route('kotas.index')->with('success', 'Data Kota berhasil diperbarui.');
+        return redirect()->route('kotas.index')->with('toast', [
+            'type' => 'success',
+            'message' => 'Data Kota berhasil diperbarui.',
+        ]);
     }
 
     // Menghapus data
@@ -69,6 +77,10 @@ class KotaController extends Controller
     {
         $kota->delete();
 
-        return redirect()->route('kotas.index')->with('success', 'Data Kota berhasil dihapus.');
+        // return redirect()->route('kotas.index')->with('success', 'Data Kota berhasil dihapus.');
+        return redirect()->route('kotas.index')->with('toast', [
+            'type' => 'success',
+            'message' => 'Data Kota berhasil dihapus.',
+        ]);
     }
 }
