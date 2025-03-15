@@ -1,9 +1,35 @@
 <script setup>
 import AppLayout from '@/layouts/AppLayout.vue';
 import { ChevronLeftIcon, ChevronRightIcon, MagnifyingGlassIcon, PencilIcon, TrashIcon } from '@heroicons/vue/24/solid';
-import { Head, router } from '@inertiajs/vue3';
+import { Head, router, usePage } from '@inertiajs/vue3';
 import debounce from 'lodash/debounce';
 import { onMounted, ref, watch } from 'vue';
+import { useToast } from 'vue-toastification';
+
+const toast = useToast();
+const page = usePage();
+
+const confirmDelete = (id) => {
+    if (window.confirm('Apakah yakin ingin menghapus data ini?')) {
+        router.delete(`/dataumats/${id}`, {
+            onSuccess: () => {
+                toast.success('Data Umat berhasil dihapus.');
+                fetchData(); // Refresh data after deletion
+            },
+        });
+    }
+};
+
+// Pantau flash message dari Laravel
+watch(
+    () => page.props.flash.toast,
+    (flash) => {
+        if (flash?.message) {
+            toast[flash.type ?? 'info'](flash.message);
+        }
+    },
+    { immediate: true },
+);
 
 const breadcrumbs = [
     {
@@ -117,15 +143,15 @@ function navigateToEdit(id) {
 }
 
 // Function to delete a record
-function deleteRecord(id) {
-    if (confirm('Apakah Anda yakin ingin menghapus data ini?')) {
-        router.delete(`/dataumats/${id}`, {
-            onSuccess: () => {
-                fetchData(); // Refresh data after deletion
-            },
-        });
-    }
-}
+// function deleteRecord(id) {
+//     if (confirm('Apakah Anda yakin ingin menghapus data ini?')) {
+//         router.delete(`/dataumats/${id}`, {
+//             onSuccess: () => {
+//                 fetchData(); // Refresh data after deletion
+//             },
+//         });
+//     }
+// }
 </script>
 
 <template>
@@ -243,7 +269,7 @@ function deleteRecord(id) {
                                     >
                                         <PencilIcon class="h-4 w-4" />
                                     </button>
-                                    <button @click="deleteRecord(dataumat.id)" class="rounded bg-red-500 px-2 py-1 text-white hover:bg-red-600">
+                                    <button @click="confirmDelete(dataumat.id)" class="rounded bg-red-500 px-2 py-1 text-white hover:bg-red-600">
                                         <TrashIcon class="h-4 w-4" />
                                     </button>
                                     <button @click="openDetailModal(dataumat.id)" class="rounded bg-blue-500 px-2 py-1 text-white hover:bg-red-600">

@@ -1,10 +1,30 @@
 <script setup>
 import Pagination from '@/components/Pagination.vue';
 import { router } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
 import AppLayout from '@/layouts/AppLayout.vue';
-import { Head, Link } from '@inertiajs/vue3';
+import { Head, Link, usePage } from '@inertiajs/vue3';
+import { useToast } from 'vue-toastification';
+const toast = useToast();
+const page = usePage();
+// @click="router.delete(route('kotas.destroy', kota.id))"
+
+const confirmDelete = (id) => {
+    if (window.confirm('Apakah yakin ingin menghapus data ini?')) {
+        router.delete(route('kotas.destroy', id));
+    }
+};
+// Pantau flash message dari Laravel
+watch(
+    () => page.props.flash.toast,
+    (flash) => {
+        if (flash?.message) {
+            toast[flash.type ?? 'info'](flash.message);
+        }
+    },
+    { immediate: true },
+);
 
 const breadcrumbs = [
     {
@@ -62,11 +82,8 @@ function applyFilters() {
                             <Link :href="route('kotas.edit', kota.id)" class="rounded bg-green-500 px-3 py-1 text-sm text-white hover:bg-green-600">
                                 Edit
                             </Link>
-                            <button
-                                @click="router.delete(route('kotas.destroy', kota.id))"
-                                class="rounded bg-red-500 px-3 py-1 text-sm text-white hover:bg-red-600"
-                            >
-                                Hapus
+                            <button @click="confirmDelete(kota.id)" class="rounded bg-red-500 px-3 py-1 text-sm text-white hover:bg-red-600">
+                                Delete
                             </button>
                         </td>
                     </tr>

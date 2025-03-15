@@ -3,6 +3,13 @@ import CardInfo from '@/components/CardInfo.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { useAuthStore } from '@/Stores/authStore';
 import { Head } from '@inertiajs/vue3';
+import { useToast } from 'vue-toastification';
+
+const toast = useToast();
+
+const showToast = () => {
+    toast.success('Berhasil menyimpan data!');
+};
 
 const userStore = useAuthStore();
 
@@ -38,6 +45,7 @@ const breadcrumbs = [
     <Head title="Dashboard" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
+        <button @click="showToast" class="rounded bg-blue-500 p-2 text-white">Tampilkan Toast</button>
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
             <CardInfo label="Umat Baru Bulan Ini" :jumlah="umatBulanIni" />
 

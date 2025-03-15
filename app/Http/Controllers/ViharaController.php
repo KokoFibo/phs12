@@ -96,7 +96,11 @@ class ViharaController extends Controller
 
         Vihara::create($validated);
 
-        return redirect()->route('viharas.index')->with('success', 'Data Vihara berhasil ditambahkan.');
+        // return redirect()->route('viharas.index')->with('success', 'Data Vihara berhasil ditambahkan.');
+        return redirect()->route('viharas.index')->with('toast', [
+            'type' => 'success',
+            'message' => 'Data Vihara berhasil ditambahkan.',
+        ]);
     }
 
     // Menampilkan halaman edit data
@@ -112,7 +116,11 @@ class ViharaController extends Controller
 
         $vihara->update($validated);
 
-        return redirect()->route('viharas.index')->with('success', 'Data Vihara berhasil diperbarui.');
+        // return redirect()->route('viharas.index')->with('success', 'Data Vihara berhasil diperbarui.');
+        return redirect()->route('viharas.index')->with('toast', [
+            'type' => 'success',
+            'message' => 'Data Vihara berhasil diperbarui.',
+        ]);
     }
 
     // Menghapus data
@@ -120,6 +128,10 @@ class ViharaController extends Controller
     {
         $vihara->delete();
 
-        return redirect()->route('viharas.index')->with('success', 'Data Vihara berhasil dihapus.');
+        // return redirect()->route('viharas.index')->with('success', 'Data Vihara berhasil dihapus.');
+        return redirect()->route('viharas.index')->with('toast', [
+            'type' => 'success',
+            'message' => 'Data Vihara berhasil dihapus.',
+        ]);
     }
 }

@@ -1,9 +1,27 @@
 <script setup>
 import Pagination from '@/components/Pagination.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { Head, Link, router } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { Head, Link, router, usePage } from '@inertiajs/vue3';
+import { ref, watch } from 'vue';
+import { useToast } from 'vue-toastification';
 
+const toast = useToast();
+const page = usePage();
+const confirmDelete = (id) => {
+    if (window.confirm('Apakah yakin ingin menghapus data ini?')) {
+        router.delete(route('viharas.destroy', id));
+    }
+};
+// Pantau flash message dari Laravel
+watch(
+    () => page.props.flash.toast,
+    (flash) => {
+        if (flash?.message) {
+            toast[flash.type ?? 'info'](flash.message);
+        }
+    },
+    { immediate: true },
+);
 const breadcrumbs = [
     {
         title: 'Vihara',
@@ -120,11 +138,9 @@ async function fetchData() {
                             >
                                 Edit
                             </Link>
-                            <button
-                                @click="router.delete(route('viharas.destroy', vihara.id))"
-                                class="rounded bg-red-500 px-3 py-1 text-sm text-white hover:bg-red-600"
-                            >
-                                Hapus
+
+                            <button @click="confirmDelete(vihara.id)" class="rounded bg-red-500 px-3 py-1 text-sm text-white hover:bg-red-600">
+                                Delete
                             </button>
                         </td>
                     </tr>
