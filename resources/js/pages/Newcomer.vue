@@ -29,7 +29,8 @@ defineProps({
 .main {
     width: 100%;
     /* background: url({{ asset('img/background-biru.jpg') }}); */
-    background: url('images/wallpaper.jpg');
+    background: url('/images/wallpaper.jpg');
+    /* background: url({{ asset('img/background-biru.jpg') }}); */
     background-position: center;
     background-size: cover;
     height: 100vh;
