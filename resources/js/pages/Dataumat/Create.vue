@@ -116,7 +116,7 @@ function back() {
     <Head title="Add Data Umat" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="mx-auto mt-3 max-w-7xl rounded-lg border py-6 sm:px-6 lg:px-8">
+        <div class="mt-3 max-w-7xl rounded-lg border p-3 py-6 sm:px-6 lg:px-8">
             <!-- <p>form.vihara_id : {{ form.vihara_id }}</p>
             <p>form.pandita_id : {{ form.pandita_id }}</p> -->
             <form @submit.prevent="submit" class="space-y-6">

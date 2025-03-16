@@ -166,7 +166,7 @@ function navigateToEdit(id) {
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="py-6 sm:px-6 lg:px-8">
             <!-- Header with Search and Add Button -->
-            <div class="mb-4 flex items-center gap-5">
+            <div class="flex flex-col gap-3 px-3 sm:gap-4 md:mb-4 md:flex-row md:items-center">
                 <div>
                     <input
                         v-model="searchQuery"
