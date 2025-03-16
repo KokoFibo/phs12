@@ -209,13 +209,13 @@ function navigateToEdit(id) {
                                 @click="handleSort('nama_alias')"
                                 class="cursor-pointer px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
                             >
-                                Nama Alias
+                                Alias
                             </th>
                             <th
                                 @click="handleSort('mandarin')"
                                 class="cursor-pointer px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500"
                             >
-                                Nama mandarin
+                                中文名
                             </th>
 
                             <th
