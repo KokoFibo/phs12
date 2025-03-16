@@ -10,7 +10,7 @@ class EditRoleController extends Controller
 {
     public function index()
     {
-        $users = User::paginate(10);
+        $users = User::orderBy('id', 'desc')->paginate(10);
         return Inertia::render('Editrole/Index', [
             'users' => $users
         ]);

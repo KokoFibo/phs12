@@ -12,6 +12,7 @@ use App\Models\Dataumat;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\EditRoleController;
 use App\Http\Controllers\NewcomerController;
+use App\Http\Controllers\TestController;
 
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->middleware('auth')
@@ -70,7 +71,7 @@ Route::middleware(['auth'])->group(function () {
                 // route::get('/tambah', [TambahanController::class, 'tambah']);
                 // route::get('/siapa', [TambahanController::class, 'siapa']);
                 // route::get('/tanpagroup', [TambahanController::class, 'tanpagroup']);
-                Route::get('/test', [DataumatController::class, 'test']);
+                Route::get('/test', [TestController::class, 'index']);
             });
         });
     });

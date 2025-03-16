@@ -16,7 +16,7 @@ use Illuminate\Http\Request;
 class DataumatController extends Controller
 {
 
-    public function test() {}
+
 
     public function detail($id)
     {
@@ -35,10 +35,14 @@ class DataumatController extends Controller
             }
             return null; // Jika tidak ada tanggal lahir
         };
+
+        $vihara = Vihara::find($umat->vihara_asal);
+        $vihara_asal = $vihara->nama_vihara;
         $tanggal_mohon_Tao_lunar = lunarInChinese($umat->tgl_mohonTao_lunar);
         return Inertia::render('Dataumat/Index', [
             'umat' => $umat,
             'umur' => $umur,
+            'vihara_asal' => $vihara_asal,
             'chienkhun' => $chienkhun(),
             'tanggal_mohon_Tao_lunar' => $tanggal_mohon_Tao_lunar,
         ]);

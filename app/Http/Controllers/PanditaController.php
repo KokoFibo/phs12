@@ -18,7 +18,7 @@ class PanditaController extends Controller
         }
 
         // Pagination
-        $panditas = $query->paginate(10);
+        $panditas = $query->orderBy('id', 'desc')->paginate(10);
 
         return inertia('Pandita/Index', [
             'panditas' => $panditas,

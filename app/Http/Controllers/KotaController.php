@@ -18,7 +18,7 @@ class KotaController extends Controller
         }
 
         // Pagination
-        $kotas = $query->paginate(10);
+        $kotas = $query->orderBy('id', 'desc')->paginate(10);
 
         return inertia('Kota/Index', [
             'kotas' => $kotas,
