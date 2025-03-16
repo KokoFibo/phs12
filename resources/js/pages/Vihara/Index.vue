@@ -1,6 +1,7 @@
 <script setup>
 import Pagination from '@/components/Pagination.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
+import { PencilIcon, TrashIcon } from '@heroicons/vue/24/solid';
 import { Head, Link, router, usePage } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
 import { useToast } from 'vue-toastification';
@@ -123,7 +124,7 @@ async function fetchData() {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="vihara in viharas.data" :key="vihara.id" class="border-b">
+                    <tr v-for="vihara in viharas.data" :key="vihara.id" class="border-b text-sm">
                         <td class="p-2">{{ vihara.nama_vihara }}</td>
                         <td class="p-2">
                             {{ vihara.group ? vihara.group.nama_group : '-' }}
@@ -131,16 +132,16 @@ async function fetchData() {
                         <td class="p-2">
                             {{ vihara.group && vihara.group.kota ? vihara.group.kota.nama_kota : '-' }}
                         </td>
-                        <td class="space-x-2 p-2">
+                        <td class="flex space-x-2 p-2">
                             <Link
                                 :href="route('viharas.edit', vihara.id)"
-                                class="rounded bg-green-500 px-3 py-1 text-sm text-white hover:bg-green-600"
+                                class="rounded bg-green-500 px-2 py-1 text-sm text-white hover:bg-green-600"
                             >
-                                Edit
+                                <PencilIcon class="h-4 w-4" />
                             </Link>
 
-                            <button @click="confirmDelete(vihara.id)" class="rounded bg-red-500 px-3 py-1 text-sm text-white hover:bg-red-600">
-                                Delete
+                            <button @click="confirmDelete(vihara.id)" class="rounded bg-red-500 px-2 py-1 text-sm text-white hover:bg-red-600">
+                                <TrashIcon class="h-4 w-4" />
                             </button>
                         </td>
                     </tr>

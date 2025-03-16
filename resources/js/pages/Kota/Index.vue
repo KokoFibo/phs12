@@ -1,5 +1,6 @@
 <script setup>
 import Pagination from '@/components/Pagination.vue';
+import { PencilIcon, TrashIcon } from '@heroicons/vue/24/solid';
 import { router } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
 
@@ -76,14 +77,14 @@ function applyFilters() {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="kota in kotas.data" :key="kota.id" class="border-b">
+                    <tr v-for="kota in kotas.data" :key="kota.id" class="border-b text-sm">
                         <td class="p-2">{{ kota.nama_kota }}</td>
-                        <td class="space-x-2 p-2">
-                            <Link :href="route('kotas.edit', kota.id)" class="rounded bg-green-500 px-3 py-1 text-sm text-white hover:bg-green-600">
-                                Edit
+                        <td class="flex space-x-2 p-2">
+                            <Link :href="route('kotas.edit', kota.id)" class="rounded bg-green-500 px-2 py-1 text-sm text-white hover:bg-green-600">
+                                <PencilIcon class="h-4 w-4" />
                             </Link>
-                            <button @click="confirmDelete(kota.id)" class="rounded bg-red-500 px-3 py-1 text-sm text-white hover:bg-red-600">
-                                Delete
+                            <button @click="confirmDelete(kota.id)" class="rounded bg-red-500 px-2 py-1 text-sm text-white hover:bg-red-600">
+                                <TrashIcon class="h-4 w-4" />
                             </button>
                         </td>
                     </tr>

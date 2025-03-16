@@ -268,7 +268,7 @@ function navigateToEdit(id) {
                                 <div class="flex space-x-2">
                                     <button
                                         @click="navigateToEdit(dataumat.id)"
-                                        class="rounded bg-yellow-500 px-2 py-1 text-white hover:bg-yellow-600"
+                                        class="rounded bg-green-500 px-2 py-1 text-white hover:bg-yellow-600"
                                     >
                                         <PencilIcon class="h-4 w-4" />
                                     </button>
