@@ -30,7 +30,7 @@ class GroupController extends Controller
         }
 
         // Pagination
-        $groups = $query->paginate($perPage);
+        $groups = $query->orderBy('id', 'desc')->paginate($perPage);
 
         return inertia('Group/Index', [
             'groups' => $groups,

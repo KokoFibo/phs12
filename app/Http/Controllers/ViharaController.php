@@ -49,7 +49,7 @@ class ViharaController extends Controller
         // dd($query->toSql(), $query->getBindings());
 
         // Paginasi hasil query
-        $viharas = $query->paginate($perPage);
+        $viharas = $query->orderBy('id', 'desc')->paginate($perPage);
 
         // Ambil daftar grup unik
         $groups = Group::select('id', 'nama_group')->distinct()->get();

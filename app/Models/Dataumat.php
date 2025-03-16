@@ -11,6 +11,7 @@ class Dataumat extends Model
         'kota_id',
         'group_id',
         'vihara_id',
+        'vihara_asal',
         'pandita_id',
         'nama_umat',
         'nama_alias',

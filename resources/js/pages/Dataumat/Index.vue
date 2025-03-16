@@ -52,6 +52,8 @@ const isModalOpen = ref(false);
 const selectedUmat = ref(null);
 const umur = ref(null);
 const chienkhun = ref(null);
+const vihara_asal = ref(null);
+
 const tanggal_mohon_Tao_lunar = ref(null);
 
 const loading = ref(false);
@@ -67,6 +69,7 @@ function openDetailModal(id) {
                 selectedUmat.value = page.props.umat;
                 umur.value = page.props.umur;
                 chienkhun.value = page.props.chienkhun;
+                vihara_asal.value = page.props.vihara_asal;
                 tanggal_mohon_Tao_lunar.value = page.props.tanggal_mohon_Tao_lunar;
                 isModalOpen.value = true;
                 loading.value = false;
@@ -80,6 +83,7 @@ function closeModal() {
     selectedUmat.value = null;
     umur.value = null;
     chienkhun.value = null;
+    vihara_asal.value = null;
     tanggal_mohon_Tao_lunar.value = null;
 }
 // console.log('nama umat: ', props.umat.nama_umat);
@@ -342,7 +346,8 @@ function navigateToEdit(id) {
                                     <!-- <p><strong>Kota:</strong> {{ selectedUmat.kota_nama }}</p> -->
                                     <p><strong>Group:</strong> {{ selectedUmat.group.nama_group }}</p>
                                     <!-- <p><strong>Group:</strong> {{ selectedUmat.nama_group }}</p> -->
-                                    <p><strong>Vihara:</strong> {{ selectedUmat.vihara.nama_vihara }}</p>
+                                    <p><strong>Vihara Aktif:</strong> {{ selectedUmat.vihara.nama_vihara }}</p>
+                                    <p><strong>Vihara Asal:</strong> {{ vihara_asal }}</p>
                                     <p><strong>Pandita:</strong> {{ selectedUmat.pandita.nama_pandita }}</p>
                                     <p><strong>HP:</strong> {{ selectedUmat.hp }}</p>
                                     <p><strong>Telp:</strong> {{ selectedUmat.telp }}</p>
