@@ -16,14 +16,7 @@ use Illuminate\Http\Request;
 class DataumatController extends Controller
 {
 
-    public function test()
-    {
-        $data = Dataumat::whereNull('group_id')
-            ->get();
-
-
-        dd('done');
-    }
+    public function test() {}
 
     public function detail($id)
     {

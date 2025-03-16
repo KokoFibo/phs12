@@ -1,62 +1,30 @@
-<script setup lang="ts">
+<script setup>
 import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
-import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/vue3';
+import { Link, usePage } from '@inertiajs/vue3';
 import { BookOpen, Folder, LayoutGrid } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: '/dashboard',
-        icon: LayoutGrid,
-    },
-    {
-        title: 'Data Umat',
-        href: '/dataumats',
-        icon: LayoutGrid,
-    },
-    {
-        title: 'Kota',
-        href: '/kotas',
-        icon: LayoutGrid,
-    },
+const page = usePage(); // Ambil data dari Inertia
+const userRole = Number(page.props.auth?.user?.role) || 0; // Konversi ke Number, default 0 untuk guest
 
-    {
-        title: 'Group',
-        href: '/groups',
-        icon: LayoutGrid,
-    },
-    {
-        title: 'Vihara',
-        href: '/viharas',
-        icon: LayoutGrid,
-    },
-    {
-        title: 'Pandita',
-        href: '/panditas',
-        icon: LayoutGrid,
-    },
-    {
-        title: 'Tanpa Vihara',
-        href: '/umat',
-        icon: LayoutGrid,
-    },
+const mainNavItems = [
+    { title: 'Dashboard', href: '/dashboard', icon: LayoutGrid, roles: [1, 2, 3] }, // Bisa diakses role 1 & 2
+    { title: 'Data Umat', href: '/dataumats', icon: LayoutGrid, roles: [1, 2, 3] }, // Bisa diakses role 1 & 2
+    { title: 'Kota', href: '/kotas', icon: LayoutGrid, roles: [2, 3] }, // Hanya role 2
+    { title: 'Group', href: '/groups', icon: LayoutGrid, roles: [2, 3] }, // Hanya role 2
+    { title: 'Vihara', href: '/viharas', icon: LayoutGrid, roles: [2, 3] }, // Hanya role 2
+    { title: 'Pandita', href: '/panditas', icon: LayoutGrid, roles: [2, 3] }, // Hanya role 2
+    { title: 'Super Admin Only', href: '/superadmins', icon: LayoutGrid, roles: [2, 3] }, // Hanya role 2
 ];
 
-const footerNavItems: NavItem[] = [
-    {
-        title: 'Github Repo',
-        href: 'https://github.com/laravel/vue-starter-kit',
-        icon: Folder,
-    },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits',
-        icon: BookOpen,
-    },
+// 🔥 Filter menu sesuai role user
+const filteredNavItems = mainNavItems.filter((item) => item.roles.includes(userRole));
+
+const footerNavItems = [
+    { title: 'Github Repo', href: 'https://github.com/laravel/vue-starter-kit', icon: Folder },
+    { title: 'Documentation', href: 'https://laravel.com/docs/starter-kits', icon: BookOpen },
 ];
 </script>
 
@@ -75,11 +43,10 @@ const footerNavItems: NavItem[] = [
         </SidebarHeader>
 
         <SidebarContent>
-            <NavMain :items="mainNavItems" />
+            <NavMain :items="filteredNavItems" />
         </SidebarContent>
 
         <SidebarFooter>
-            <!-- <NavFooter :items="footerNavItems" /> -->
             <NavUser />
         </SidebarFooter>
     </Sidebar>

@@ -1,5 +1,6 @@
 <script setup>
 import AppLayout from '@/layouts/AppLayout.vue';
+import { useAuthStore } from '@/Stores/authStore';
 import { ChevronLeftIcon, ChevronRightIcon, MagnifyingGlassIcon, PencilIcon, TrashIcon } from '@heroicons/vue/24/solid';
 import { Head, router, usePage } from '@inertiajs/vue3';
 import debounce from 'lodash/debounce';
@@ -8,7 +9,9 @@ import { useToast } from 'vue-toastification';
 
 const toast = useToast();
 const page = usePage();
+const userStore = useAuthStore();
 
+console.log(userStore.user_role);
 const confirmDelete = (id) => {
     if (window.confirm('Apakah yakin ingin menghapus data ini?')) {
         router.delete(`/dataumats/${id}`, {
@@ -269,7 +272,11 @@ function navigateToEdit(id) {
                                     >
                                         <PencilIcon class="h-4 w-4" />
                                     </button>
-                                    <button @click="confirmDelete(dataumat.id)" class="rounded bg-red-500 px-2 py-1 text-white hover:bg-red-600">
+                                    <button
+                                        v-if="userStore.user_role > 1"
+                                        @click="confirmDelete(dataumat.id)"
+                                        class="rounded bg-red-500 px-2 py-1 text-white hover:bg-red-600"
+                                    >
                                         <TrashIcon class="h-4 w-4" />
                                     </button>
                                     <button @click="openDetailModal(dataumat.id)" class="rounded bg-blue-500 px-2 py-1 text-white hover:bg-red-600">
