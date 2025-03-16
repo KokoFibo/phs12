@@ -8,9 +8,9 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\ViharaController;
 use App\Http\Controllers\PanditaController;
 use App\Http\Controllers\DataumatController;
-use App\Http\Controllers\SuperadminController;
 use App\Models\Dataumat;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\EditRoleController;
 use App\Http\Controllers\NewcomerController;
 
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
@@ -63,7 +63,7 @@ Route::middleware(['auth'])->group(function () {
             Route::resource('kotas', KotaController::class)->names('kotas');
             Route::resource('groups', GroupController::class)->names('groups');
             Route::resource('viharas', ViharaController::class)->names('viharas');
-            Route::resource('superadmins', SuperadminController::class)->names('superadmins');
+            Route::resource('editroles', EditRoleController::class)->names('editroles');
             Route::middleware(['Developer'])->group(function () {
 
                 // route untuk developer

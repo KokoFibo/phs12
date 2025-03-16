@@ -16,7 +16,7 @@ const mainNavItems = [
     { title: 'Group', href: '/groups', icon: LayoutGrid, roles: [2, 3] }, // Hanya role 2
     { title: 'Vihara', href: '/viharas', icon: LayoutGrid, roles: [2, 3] }, // Hanya role 2
     { title: 'Pandita', href: '/panditas', icon: LayoutGrid, roles: [2, 3] }, // Hanya role 2
-    { title: 'Super Admin Only', href: '/superadmins', icon: LayoutGrid, roles: [2, 3] }, // Hanya role 2
+    { title: 'Edit Role', href: '/editroles', icon: LayoutGrid, roles: [2, 3] }, // Hanya role 2
 ];
 
 // 🔥 Filter menu sesuai role user
