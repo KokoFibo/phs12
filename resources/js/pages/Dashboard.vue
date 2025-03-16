@@ -32,6 +32,7 @@ userStore.setPanditaIdDefault(props.auth.pandita_id_default);
 userStore.setViharaIdDefault(props.auth.vihara_id_default);
 userStore.setPanditaId(props.auth.pandita_id_default);
 userStore.setViharaId(props.auth.vihara_id_default);
+userStore.setUserRole(props.auth.user.role);
 
 const breadcrumbs = [
     {
@@ -39,13 +40,12 @@ const breadcrumbs = [
         href: '/dashboard',
     },
 ];
+console.log('user role : ', props.auth.user.role);
 </script>
-
 <template>
     <Head title="Dashboard" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <button @click="showToast" class="rounded bg-blue-500 p-2 text-white">Tampilkan Toast</button>
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
             <CardInfo label="Umat Baru Bulan Ini" :jumlah="umatBulanIni" />
 

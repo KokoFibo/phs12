@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignId('vihara_id');
             $table->foreignId('pandita_id');
 
+            $table->foreignId('vihara_asal');
             $table->string('nama_umat');
             $table->string('nama_alias')->nullable();
             $table->string('mandarin')->nullable();

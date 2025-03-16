@@ -12,7 +12,11 @@ export const useAuthStore = defineStore('auth', () => {
     const vihara_id_default = ref('true');
     const pandita_id_default = ref('true');
     const vihara_default = ref(true);
+    const user_role = ref();
 
+    function setUserRole(data) {
+        user_role.value = data;
+    }
     function setViharaDefault(data) {
         vihara_default.value = data;
     }
@@ -73,5 +77,7 @@ export const useAuthStore = defineStore('auth', () => {
         setViharaIdDefault,
         vihara_default,
         setViharaDefault,
+        user_role,
+        setUserRole,
     };
 });
