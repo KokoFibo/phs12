@@ -18,9 +18,7 @@ defineProps({
                 <p class="mb-1 text-xl text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
                     Terima kasih sudah mendaftar, Untuk sementara akun anda belum aktif
                 </p>
-                <p class="mb-1 text-xl text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">
-                    Silakan Hubungi Supervisor atau Manager anda untuk mengaktifkan akun anda.
-                </p>
+                <p class="mb-1 text-xl text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">Silakan Hubungi Admin untuk mengaktifkan akun anda.</p>
                 <h1 class="mb-5 text-xl text-white drop-shadow-[0_1.2px_1.2px_rgba(0,0,0,0.8)]">Terima Kasih</h1>
                 <button @click="logout" class="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600">Logout</button>
             </div>
