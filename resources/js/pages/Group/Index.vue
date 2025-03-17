@@ -72,8 +72,8 @@ async function fetchData() {
     <Head title="Group" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-            <div class="max-w-7xl py-6 sm:px-6 lg:px-8">
+        <div class="flex h-full flex-1 flex-col gap-4 rounded-xl px-4 md:p-4">
+            <div class="py-6 sm:px-6 lg:px-8">
                 <!-- Header -->
                 <div class="mb-4 flex flex-col gap-4 md:mb-4 md:w-1/2 md:flex-row md:items-center md:justify-between">
                     <div class="flex items-center justify-between gap-3 md:w-2/3">

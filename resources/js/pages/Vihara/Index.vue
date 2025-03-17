@@ -118,40 +118,42 @@ async function fetchData() {
                     Tambah Data Vihara
                 </Link>
             </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full table-auto border bg-white">
+                    <thead>
+                        <tr>
+                            <th class="border-b p-2 text-left font-medium text-gray-700">Nama Vihara</th>
+                            <th class="border-b p-2 text-left font-medium text-gray-700">Group</th>
+                            <th class="border-b p-2 text-left font-medium text-gray-700">Kota</th>
+                            <th class="border-b p-2 text-left font-medium text-gray-700">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="vihara in viharas.data" :key="vihara.id" class="border-b text-sm">
+                            <td class="p-2">{{ vihara.nama_vihara }}</td>
+                            <td class="p-2">
+                                {{ vihara.group ? vihara.group.nama_group : '-' }}
+                            </td>
+                            <td class="p-2">
+                                {{ vihara.group && vihara.group.kota ? vihara.group.kota.nama_kota : '-' }}
+                            </td>
+                            <td class="flex space-x-2 p-2">
+                                <Link
+                                    :href="route('viharas.edit', vihara.id)"
+                                    class="rounded bg-green-500 px-2 py-1 text-sm text-white hover:bg-green-600"
+                                >
+                                    <PencilIcon class="h-4 w-4" />
+                                </Link>
 
-            <table class="min-w-full border bg-white">
-                <thead>
-                    <tr>
-                        <th class="border-b p-2 text-left font-medium text-gray-700">Nama Vihara</th>
-                        <th class="border-b p-2 text-left font-medium text-gray-700">Group</th>
-                        <th class="border-b p-2 text-left font-medium text-gray-700">Kota</th>
-                        <th class="border-b p-2 text-left font-medium text-gray-700">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="vihara in viharas.data" :key="vihara.id" class="border-b text-sm">
-                        <td class="p-2">{{ vihara.nama_vihara }}</td>
-                        <td class="p-2">
-                            {{ vihara.group ? vihara.group.nama_group : '-' }}
-                        </td>
-                        <td class="p-2">
-                            {{ vihara.group && vihara.group.kota ? vihara.group.kota.nama_kota : '-' }}
-                        </td>
-                        <td class="flex space-x-2 p-2">
-                            <Link
-                                :href="route('viharas.edit', vihara.id)"
-                                class="rounded bg-green-500 px-2 py-1 text-sm text-white hover:bg-green-600"
-                            >
-                                <PencilIcon class="h-4 w-4" />
-                            </Link>
+                                <button @click="confirmDelete(vihara.id)" class="rounded bg-red-500 px-2 py-1 text-sm text-white hover:bg-red-600">
+                                    <TrashIcon class="h-4 w-4" />
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
 
-                            <button @click="confirmDelete(vihara.id)" class="rounded bg-red-500 px-2 py-1 text-sm text-white hover:bg-red-600">
-                                <TrashIcon class="h-4 w-4" />
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
             <Pagination :links="viharas.links" />
         </div>
         <!-- <Pagination :links="viharas.links" /> -->
