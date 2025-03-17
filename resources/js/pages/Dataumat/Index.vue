@@ -337,7 +337,7 @@ function navigateToEdit(id) {
                                     <p><strong>Group:</strong> {{ selectedUmat.group.nama_group }}</p>
 
                                     <p><strong>Alamat:</strong> {{ selectedUmat.alamat }}</p>
-                                    <p><strong>Keterangan:</strong> {{ selectedUmat.status }}</p>
+                                    <p><strong>Keterangan:</strong> {{ selectedUmat.keterangan }}</p>
                                 </div>
 
                                 <!-- Kolom 2 -->
