@@ -72,30 +72,33 @@ async function fetchData() {
     <Head title="Group" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-            <div class="max-w-7xl py-6 sm:px-6 lg:px-8">
+        <div class="flex h-full flex-1 flex-col gap-4 rounded-xl px-4 md:p-4">
+            <div class="py-6 sm:px-6 lg:px-8">
                 <!-- Header -->
-                <div class="mb-4 flex items-center justify-between">
-                    <div class="flex gap-3">
+                <div class="mb-4 flex flex-col gap-4 md:mb-4 md:w-1/2 md:flex-row md:items-center md:justify-between">
+                    <div class="flex items-center justify-between gap-3 md:w-2/3">
                         <input
                             v-model="search"
                             type="text"
                             placeholder="Cari..."
-                            class="rounded border p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            class="w-3/4 rounded border p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                             @input="fetchData"
                         />
                         <select
                             v-model="perPage"
                             @change="fetchData"
-                            class="rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+                            class="w-1/4 rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
                         >
                             <option value="10">10</option>
                             <option value="20">20</option>
                             <option value="50">50</option>
                         </select>
                     </div>
-
-                    <Link :href="route('groups.create')" class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"> Tambah Data Group </Link>
+                    <div>
+                        <Link :href="route('groups.create')" class="block rounded bg-blue-500 px-4 py-2 text-center text-white hover:bg-blue-600">
+                            Tambah Data Group
+                        </Link>
+                    </div>
                 </div>
 
                 <!-- Tabel Data -->

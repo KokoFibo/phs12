@@ -59,15 +59,17 @@ function applyFilters() {
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-            <div class="mb-4 flex items-center justify-between">
+            <div class="mb-2 flex flex-col items-center gap-2 md:mb-4 md:w-1/2 md:flex-row md:gap-5">
                 <input
                     v-model="search"
                     type="text"
                     placeholder="Cari..."
-                    class="rounded border p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    class="w-full rounded border p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 md:w-3/4"
                     @input="applyFilters"
                 />
-                <Link :href="route('panditas.create')" class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"> Tambah Data Pandita </Link>
+                <Link :href="route('panditas.create')" class="w-full rounded bg-blue-500 px-4 py-2 text-center text-white hover:bg-blue-600 md:w-1/4">
+                    Tambah Data Pandita
+                </Link>
             </div>
 
             <table class="min-w-full border bg-white">

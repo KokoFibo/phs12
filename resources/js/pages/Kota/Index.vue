@@ -58,15 +58,21 @@ function applyFilters() {
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-            <div class="mb-4 flex items-center justify-between">
+            <div class="flex flex-col justify-between gap-2 md:mb-4 md:w-1/2 md:flex-row md:items-center">
                 <input
                     v-model="search"
                     type="text"
                     placeholder="Cari..."
-                    class="rounded border p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    class="rounded border p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 md:w-3/4"
                     @input="applyFilters"
                 />
-                <Link :href="route('kotas.create')" class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"> Tambah Data Kota </Link>
+                <Link
+                    :href="route('kotas.create')"
+                    class="rounded bg-blue-500 py-2 text-center text-white hover:bg-blue-600 md:w-1/4 md:px-4 md:py-2"
+                >
+                    Tambah Kota
+                </Link>
+                <!-- <Link :href="route('kotas.create')" class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"> Tambah Data Kota </Link> -->
             </div>
 
             <table class="min-w-full border bg-white">
