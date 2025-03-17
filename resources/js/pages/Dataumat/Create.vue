@@ -53,7 +53,7 @@ const form = useForm({
     tgl_mohonTao_lunar: '',
     tgl_sd3h: '',
     tgl_vtotal: '',
-    status: '',
+    status: 'Active',
     keterangan: '',
 });
 
@@ -231,6 +231,7 @@ function back() {
                     <div>
                         <label for="alamat" class="block text-sm font-medium text-gray-700">Alamat</label>
                         <textarea
+                            required
                             v-model="form.alamat"
                             id="alamat"
                             rows="3"
@@ -291,6 +292,7 @@ function back() {
                     <div>
                         <label for="pengajak" class="block text-sm font-medium text-gray-700">Pengajak</label>
                         <input
+                            required
                             v-model="form.pengajak"
                             type="text"
                             id="pengajak"
@@ -302,6 +304,7 @@ function back() {
                     <div>
                         <label for="penjamin" class="block text-sm font-medium text-gray-700">Penjamin</label>
                         <input
+                            required
                             v-model="form.penjamin"
                             type="text"
                             id="penjamin"
@@ -313,6 +316,7 @@ function back() {
                     <div>
                         <label for="tgl_mohonTao" class="block text-sm font-medium text-gray-700">Tanggal Mohon Tao</label>
                         <input
+                            required
                             v-model="form.tgl_mohonTao"
                             type="date"
                             id="tgl_mohonTao"
@@ -360,7 +364,7 @@ function back() {
                 <!-- Keterangan -->
                 <div class="grid grid-cols-1 gap-4">
                     <div>
-                        <label for="keterangan" class="block text-sm font-medium text-gray-700">Keterangan (Opsional)</label>
+                        <label for="keterangan" class="block text-sm font-medium text-gray-700">Keterangan</label>
                         <textarea
                             v-model="form.keterangan"
                             id="keterangan"

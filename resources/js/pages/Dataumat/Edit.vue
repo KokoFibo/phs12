@@ -45,74 +45,9 @@ const form = useForm({
     keterangan: props.dataumat.keterangan,
 });
 
-// const groups = ref([]);
-// const viharas = ref([]);
-// const panditas = ref([]);
-// console.log('group', props.dataumat.group_id);
-// console.log('vihara', props.dataumat.vihara_id);
-
 function back() {
     router.get('/dataumats');
 }
-
-// Watch untuk memperbarui groups saat kota_id berubah
-// watch(
-//     () => form.kota_id,
-//     (newKotaId) => {
-//         if (newKotaId) {
-//             router.get(
-//                 route('groups.by.kota.edit', newKotaId),
-//                 {},
-//                 {
-//                     preserveState: true,
-//                     preserveScroll: true,
-//                     // only: ['groups'],
-//                     onSuccess: ({ props }) => {
-//                         groups.value = props.groups;
-//                         form.group_id = props.dataumat.group_id; // Reset group_id
-//                         viharas.value = []; // Reset viharas
-//                     },
-//                     onError: (error) => {
-//                         console.error('Error fetching groups:', error);
-//                     },
-//                 },
-//             );
-//         } else {
-//             groups.value = [];
-//             viharas.value = [];
-//             form.group_id = '';
-//             form.vihara_id = '';
-//         }
-//     },
-//     // { immediate: true },
-// );
-
-// Watch untuk memperbarui viharas saat group_id berubah
-// watch(
-//     () => form.group_id,
-//     (newGroupId) => {
-//         if (newGroupId) {
-//             router.get(
-//                 route('viharas.by.group.edit', newGroupId),
-//                 {},
-//                 {
-//                     preserveState: true,
-//                     preserveScroll: true,
-//                     only: ['viharas'],
-//                     onSuccess: ({ props }) => {
-//                         viharas.value = props.viharas;
-//                     },
-//                     onError: (error) => {
-//                         console.error('Error fetching viharas:', error);
-//                     },
-//                 },
-//             );
-//         } else {
-//             viharas.value = [];
-//             form.vihara_id = '';
-//         }
-//     },
-// );
 
 function submit() {
     router.put(`/dataumats/${props.dataumat.id}`, form, {
@@ -128,10 +63,6 @@ function submit() {
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="mx-auto mt-3 max-w-7xl rounded-lg border py-6 text-sm sm:px-6 lg:px-8">
-            <!-- <p>form.kota_id: {{ form.kota_id }}</p>
-            <p>form.group_id: {{ form.group_id }}</p>
-            <p>form.vihara_id: {{ form.vihara_id }}</p>
-            <p>form.pandita_id: {{ form.pandita_id }}</p> -->
             <form @submit.prevent="submit" class="space-y-6">
                 <!-- Pilihan Kota, Group, Vihara, Pandita -->
                 <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -141,61 +72,6 @@ function submit() {
                     <div>
                         <DropdownPandita v-model="form.pandita_id" :panditas="panditas" :errors="errors" class="mt-1" />
                     </div>
-                    <!-- <div>
-                        <label for="kota_id" class="block text-sm font-medium text-gray-700">Kota</label>
-                        <select
-                            v-model="form.kota_id"
-                            id="kota_id"
-                            class="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-                            required
-                        >
-                            <option value="" disabled>Pilih Kota</option>
-                            <option v-for="kota in kotas" :key="kota.id" :value="kota.id">{{ kota.nama_kota }}</option>
-                        </select>
-                        <p v-if="errors.kota_id" class="text-sm text-red-500">{{ errors.kota_id }}</p>
-                    </div>
-
-                    <div>
-                        <label for="group_id" class="block text-sm font-medium text-gray-700">Group</label>
-                        <select
-                            v-model="form.group_id"
-                            id="group_id"
-                            class="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-                            required
-                        >
-                            <option value="" disabled>Pilih Group</option>
-                            <option v-for="group in groups" :key="group.id" :value="group.id">{{ group.nama_group }}</option>
-                        </select>
-                        <p v-if="errors.group_id" class="text-sm text-red-500">{{ errors.group_id }}</p>
-                    </div> -->
-
-                    <!-- <div>
-                        <label for="vihara_id" class="block text-sm font-medium text-gray-700">Vihara</label>
-                        <select
-                            v-model="form.vihara_id"
-                            id="vihara_id"
-                            class="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-                            required
-                        >
-                            <option value="" disabled>Pilih Vihara</option>
-                            <option v-for="vihara in viharas" :key="vihara.id" :value="vihara.id">{{ vihara.nama_vihara }}</option>
-                        </select>
-                        <p v-if="errors.vihara_id" class="text-sm text-red-500">{{ errors.vihara_id }}</p>
-                    </div> -->
-
-                    <!-- <div>
-                        <label for="pandita_id" class="block text-sm font-medium text-gray-700">Pandita</label>
-                        <select
-                            v-model="form.pandita_id"
-                            id="pandita_id"
-                            class="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-                            required
-                        >
-                            <option value="" disabled>Pilih Pandita</option>
-                            <option v-for="pandita in panditas" :key="pandita.id" :value="pandita.id">{{ pandita.nama_pandita }}</option>
-                        </select>
-                        <p v-if="errors.pandita_id" class="text-sm text-red-500">{{ errors.pandita_id }}</p>
-                    </div> -->
                 </div>
 
                 <!-- Form Input Lainnya -->
@@ -250,6 +126,7 @@ function submit() {
                     <div>
                         <label for="alamat" class="block text-sm font-medium text-gray-700">Alamat</label>
                         <textarea
+                            required
                             v-model="form.alamat"
                             id="alamat"
                             rows="3"
@@ -310,6 +187,7 @@ function submit() {
                     <div>
                         <label for="pengajak" class="block text-sm font-medium text-gray-700">Pengajak</label>
                         <input
+                            required
                             v-model="form.pengajak"
                             type="text"
                             id="pengajak"
@@ -321,6 +199,7 @@ function submit() {
                     <div>
                         <label for="penjamin" class="block text-sm font-medium text-gray-700">Penjamin</label>
                         <input
+                            required
                             v-model="form.penjamin"
                             type="text"
                             id="penjamin"
@@ -332,6 +211,7 @@ function submit() {
                     <div>
                         <label for="tgl_mohonTao" class="block text-sm font-medium text-gray-700">Tanggal Mohon Tao</label>
                         <input
+                            required
                             v-model="form.tgl_mohonTao"
                             type="date"
                             id="tgl_mohonTao"
