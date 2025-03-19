@@ -115,7 +115,7 @@ async function fetchData() {
                     </select>
                 </div>
                 <Link :href="route('viharas.create')" class="rounded bg-blue-500 px-4 py-2 text-center text-white hover:bg-blue-600">
-                    Tambah Data Vihara
+                    Tambah Data Vihar
                 </Link>
             </div>
             <div class="overflow-x-auto">

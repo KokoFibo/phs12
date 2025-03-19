@@ -5,8 +5,8 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, Sid
 import { Link, usePage } from '@inertiajs/vue3';
 import { BookOpen, Folder, LayoutGrid } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
-
 const page = usePage(); // Ambil data dari Inertia
+
 const userRole = Number(page.props.auth?.user?.role) || 0; // Konversi ke Number, default 0 untuk guest
 
 const mainNavItems = [
