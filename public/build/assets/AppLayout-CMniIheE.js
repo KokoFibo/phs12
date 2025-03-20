@@ -1,1 +1,0 @@
-import{N as a}from"./Navbar-DIFlZRtY.js";import{c as r,o,d as t,a as s,r as n}from"./app-MGHRrWdM.js";const _={__name:"AppLayout",setup(c){return(e,l)=>(o(),r("div",null,[t(a),s("main",null,[n(e.$slots,"default")])]))}};export{_};
