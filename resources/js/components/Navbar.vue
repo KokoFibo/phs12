@@ -31,21 +31,21 @@ const closeDropdowns = (event) => {
     }
 };
 
-onMounted(() => {
-    document.addEventListener('click', closeDropdowns);
-});
-const greeting = computed(() => {
-    const hour = new Date().getHours();
-    if (hour < 10) {
-        return 'Selamat pagi';
-    } else if (hour < 15) {
-        return 'Selamat siang';
-    } else if (hour < 18) {
-        return 'Selamat sore';
-    } else {
-        return 'Selamat malam';
-    }
-});
+// onMounted(() => {
+//     document.addEventListener('click', closeDropdowns);
+// });
+// const greeting = computed(() => {
+//     const hour = new Date().getHours();
+//     if (hour < 10) {
+//         return 'Selamat pagi';
+//     } else if (hour < 15) {
+//         return 'Selamat siang';
+//     } else if (hour < 18) {
+//         return 'Selamat sore';
+//     } else {
+//         return 'Selamat malam';
+//     }
+// });
 </script>
 
 <template>
@@ -97,7 +97,7 @@ const greeting = computed(() => {
 
            <div class='flex gap-5'>
             <div class="hidden lg:block">
-                <p>{{ greeting }},  {{ userStore.user.name }}</p>
+                <!-- <p>{{ greeting }},  {{ userStore.user.name }}</p> -->
             </div>
              <!-- Dark Mode Toggle & Mobile Menu Button -->
             <div class="flex items-center space-x-4">
