@@ -35,6 +35,7 @@ userStore.setViharaIdDefault(props.auth.vihara_id_default);
 userStore.setPanditaId(props.auth.pandita_id_default);
 userStore.setViharaId(props.auth.vihara_id_default);
 userStore.setUserRole(props.auth.user.role);
+userStore.setUserName(props.auth.user.name);
 
 const breadcrumbs = [
     {
