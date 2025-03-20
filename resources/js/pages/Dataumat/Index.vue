@@ -1,6 +1,7 @@
 <script setup>
-import Navbar from '@/components/Navbar.vue';
+// import Navbar from '@/components/Navbar.vue';
 // import SimplePagination from '@/components/SimplePagination.vue';
+import AppLayout from '@/layouts/AppLayout.vue';
 
 import { useAuthStore } from '@/Stores/authStore';
 import { ChevronLeftIcon, ChevronRightIcon, MagnifyingGlassIcon, PencilIcon, TrashIcon } from '@heroicons/vue/24/solid';
@@ -163,8 +164,9 @@ function navigateToEdit(id) {
 </script>
 
 <template>
+<AppLayout>
     <Head title="Data Umat" />
-    <Navbar />
+    <!-- <Navbar /> -->
     
     <div class="mx-auto flex max-w-7xl flex-col rounded-xl p-4 text-sm bg-white dark:bg-gray-900 dark:text-gray-200">
         <div class="mb-3 hidden rounded-lg border p-2 md:block dark:border-gray-700">
@@ -401,6 +403,7 @@ function navigateToEdit(id) {
             <button  class="rounded border px-3 py-1 text-xs md:px-4 md:py-2 md:text-sm text-gray-600 shadow-sm transition hover:bg-gray-100 active:scale-95 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700" @click="goToPage(pagination.last_page)"> Last &raquo;</button>
         </div>
     </div>
+</AppLayout>
 </template>
 <style scoped>
 /* Ensure only the table is scrollable horizontally */
