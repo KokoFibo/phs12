@@ -8,13 +8,36 @@ use Inertia\Inertia;
 
 class EditRoleController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::orderBy('id', 'desc')->paginate(10);
+        $perPage = $request->perPage ?: 10;
+        $query = User::query();
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%$search%");
+                $q->orWhere('email', 'like', "%$search%");
+            });
+        }
+
+        $users = $query->orderBy('id', 'desc')->paginate($perPage);
+
         return Inertia::render('Editrole/Index', [
             'users' => $users
         ]);
     }
+
+    // public function index(Request $request)
+    // {
+    //     $perPage = $request->perPage ?: 10;
+
+    //     $users = User::orderBy('id', 'desc')->paginate(10);
+    //     return Inertia::render('Editrole/Index', [
+    //         'users' => $users
+    //     ]);
+    // }
 
     public function destroy($id)
     {

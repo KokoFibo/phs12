@@ -1,6 +1,5 @@
-<script setup lang="ts">
+<script setup>
 import InputError from '@/components/InputError.vue';
-import AppLayout from '@/layouts/AppLayout.vue';
 import SettingsLayout from '@/layouts/settings/Layout.vue';
 import { TransitionRoot } from '@headlessui/vue';
 import { Head, useForm } from '@inertiajs/vue3';
@@ -10,17 +9,18 @@ import HeadingSmall from '@/components/HeadingSmall.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { type BreadcrumbItem } from '@/types';
+import Navbar from '@/components/Navbar.vue';
 
-const breadcrumbItems: BreadcrumbItem[] = [
+
+const breadcrumbItems = [
     {
         title: 'Password settings',
         href: '/settings/password',
     },
 ];
 
-const passwordInput = ref<HTMLInputElement | null>(null);
-const currentPasswordInput = ref<HTMLInputElement | null>(null);
+const passwordInput = ref(null);
+const currentPasswordInput = ref(null);
 
 const form = useForm({
     current_password: '',
@@ -32,17 +32,17 @@ const updatePassword = () => {
     form.put(route('password.update'), {
         preserveScroll: true,
         onSuccess: () => form.reset(),
-        onError: (errors: any) => {
+        onError: (errors) => {
             if (errors.password) {
                 form.reset('password', 'password_confirmation');
-                if (passwordInput.value instanceof HTMLInputElement) {
+                if (passwordInput.value) {
                     passwordInput.value.focus();
                 }
             }
 
             if (errors.current_password) {
                 form.reset('current_password');
-                if (currentPasswordInput.value instanceof HTMLInputElement) {
+                if (currentPasswordInput.value) {
                     currentPasswordInput.value.focus();
                 }
             }
@@ -52,8 +52,10 @@ const updatePassword = () => {
 </script>
 
 <template>
-    <AppLayout :breadcrumbs="breadcrumbItems">
+    <Navbar />
+
         <Head title="Password settings" />
+       <div class="mx-auto flex max-w-7xl flex-col rounded-xl p-4 text-sm">
 
         <SettingsLayout>
             <div class="space-y-6">
@@ -117,5 +119,6 @@ const updatePassword = () => {
                 </form>
             </div>
         </SettingsLayout>
-    </AppLayout>
+            
+        </div>
 </template>

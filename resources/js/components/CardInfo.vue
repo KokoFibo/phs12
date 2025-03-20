@@ -1,7 +1,7 @@
 <template>
-    <div class="max-w-sm rounded-2xl bg-white p-6 shadow-lg">
+    <div class="max-w-sm rounded-2xl bg-white p-6 shadow-lg dark:bg-gray-900 dark:text-gray-200">
         <div class="flex items-center space-x-4">
-            <div class="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 text-blue-600">
+            <div class="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100 text-blue-600 dark:bg-gray-700 dark:text-blue-400">
                 <slot name="icon">
                     <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path
@@ -14,13 +14,12 @@
                 </slot>
             </div>
             <div>
-                <h3 class="text-lg font-semibold text-gray-700">{{ label }}</h3>
-                <p class="text-2xl font-bold text-gray-900">{{ jumlah }} Orang</p>
+                <h3 class="text-sm  text-gray-700 dark:text-gray-300">{{ label }}</h3>
+                <p class="text-lg  text-gray-900 dark:text-gray-100">{{ jumlah }} Orang</p>
             </div>
         </div>
     </div>
 </template>
-
 <script setup>
 defineProps({
     label: String,
