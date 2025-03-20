@@ -1,9 +1,11 @@
 <script setup>
 import CardInfo from '@/components/CardInfo.vue';
-import AppLayout from '@/layouts/AppLayout.vue';
+// import AppLayout from '@/layouts/AppLayout.vue';
 import { useAuthStore } from '@/Stores/authStore';
 import { Head } from '@inertiajs/vue3';
 import { useToast } from 'vue-toastification';
+import Navbar from '@/components/Navbar.vue';
+
 
 const toast = useToast();
 
@@ -45,9 +47,14 @@ console.log('user role : ', props.auth.user.role);
 <template>
     <Head title="Dashboard" />
 
-    <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-            <CardInfo label="Umat Baru Bulan Ini" :jumlah="umatBulanIni" />
+    <!-- <AppLayout :breadcrumbs="breadcrumbs"> -->
+        <Navbar />
+       <div class="mx-auto flex max-w-7xl flex-col rounded-xl p-4 text-sm">
+        <div class="mb-3 hidden rounded-lg border p-2 md:block">
+            <h2 class="text-xl text-gray-500">Dashboard</h2>
+        </div>
+          <div class="flex flex-col lg:flex-row gap-2 lg:gap-4">
+              <CardInfo label="Umat Baru Bulan Ini" :jumlah="umatBulanIni" />
 
             <CardInfo label="Total Umat" :jumlah="totalUmat">
                 <template #icon>
@@ -56,6 +63,7 @@ console.log('user role : ', props.auth.user.role);
                     </svg>
                 </template>
             </CardInfo>
+          </div>
         </div>
-    </AppLayout>
+    <!-- </AppLayout> -->
 </template>

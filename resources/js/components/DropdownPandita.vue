@@ -37,30 +37,34 @@ const handleScroll = (event) => {
 
 <template>
     <div>
-        <label class="block text-sm font-medium text-gray-700">Pandita</label>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Pandita</label>
         <Popover v-model:open="isOpen">
             <PopoverTrigger as-child>
-                <Button variant="outline" class="w-full justify-between">
+                <Button variant="outline" class="w-full justify-between dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200">
                     {{ selectedPandita }}
                 </Button>
             </PopoverTrigger>
-            <PopoverContent class="w-[300px] p-2">
-                <Input v-model="searchQuery" placeholder="Cari Pandita..." class="mb-2" />
+            <PopoverContent class="w-[300px] p-2 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200">
+                <Input
+                    v-model="searchQuery"
+                    placeholder="Cari Pandita..."
+                    class="mb-2 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 dark:focus:border-blue-400 dark:focus:ring-blue-400"
+                />
                 <ScrollArea class="max-h-40 overflow-auto" @wheel="handleScroll">
                     <ul v-if="filteredPanditas.length">
                         <li
                             v-for="pandita in filteredPanditas"
                             :key="pandita.id"
-                            class="cursor-pointer rounded-md p-2 hover:bg-gray-100"
+                            class="cursor-pointer rounded-md p-2 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-200"
                             @click="selectPandita(pandita)"
                         >
                             {{ pandita.nama_pandita }}
                         </li>
                     </ul>
-                    <p v-else class="p-2 text-sm text-gray-500">Pandita tidak ditemukan</p>
+                    <p v-else class="p-2 text-sm text-gray-500 dark:text-gray-400">Pandita tidak ditemukan</p>
                 </ScrollArea>
             </PopoverContent>
         </Popover>
-        <p v-if="errors?.pandita_id" class="text-sm text-red-500">{{ errors.pandita_id }}</p>
+        <p v-if="errors?.pandita_id" class="text-sm text-red-500 dark:text-red-400">{{ errors.pandita_id }}</p>
     </div>
 </template>

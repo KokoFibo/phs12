@@ -4,8 +4,10 @@ import { Head, useForm, usePage } from '@inertiajs/vue3';
 import { watch } from 'vue';
 
 import HeadingSmall from '@/components/HeadingSmall.vue';
+import Navbar from '@/components/Navbar.vue';
 import { Button } from '@/components/ui/button';
-import AppLayout from '@/layouts/AppLayout.vue';
+import { Label } from '@/components/ui/label';
+
 import SettingsLayout from '@/layouts/settings/Layout.vue';
 
 // Breadcrumbs
@@ -85,9 +87,10 @@ const submit = () => {
 </script>
 
 <template>
-    <AppLayout :breadcrumbs="breadcrumbs">
-        <Head title="Preference settings" />
+    <Navbar />
 
+    <Head title="Preference settings" />
+    <div class="mx-auto flex max-w-7xl flex-col rounded-xl p-4 text-sm">
         <SettingsLayout>
             <div class="flex flex-col space-y-6">
                 <HeadingSmall title="Preference information" description="Update setting preferensi anda" />
@@ -95,11 +98,11 @@ const submit = () => {
                 <form @submit.prevent="submit" class="space-y-6">
                     <div class="grid grid-cols-1 gap-4 text-sm md:grid-cols-2 lg:grid-cols-2">
                         <div>
-                            <label for="vihara_id" class="block text-sm font-medium text-gray-700">Vihara</label>
+                            <Label for="vihara_id">Vihara</Label>
                             <select
                                 v-model="form.vihara_id"
                                 id="vihara_id"
-                                class="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+                                class="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:focus:border-blue-400 dark:focus:ring-blue-400"
                                 required
                             >
                                 <option value="" disabled>Pilih Vihara</option>
@@ -109,11 +112,11 @@ const submit = () => {
                         </div>
 
                         <div>
-                            <label for="pandita_id" class="block text-sm font-medium text-gray-700">Pandita</label>
+                            <Label for="pandita_id">Pandita</Label>
                             <select
                                 v-model="form.pandita_id"
                                 id="pandita_id"
-                                class="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+                                class="mt-1 block w-full rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:focus:border-blue-400 dark:focus:ring-blue-400"
                                 required
                             >
                                 <option value="" disabled>Pilih Pandita</option>
@@ -139,5 +142,5 @@ const submit = () => {
                 </form>
             </div>
         </SettingsLayout>
-    </AppLayout>
+    </div>
 </template>

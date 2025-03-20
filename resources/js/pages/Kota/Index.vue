@@ -1,15 +1,17 @@
 <script setup>
-import Pagination from '@/components/Pagination.vue';
+import SimplePagination from '@/components/SimplePagination.vue';
+// import Pagination from '@/components/Pagination.vue';
+import Navbar from '@/components/Navbar.vue';
+
 import { PencilIcon, TrashIcon } from '@heroicons/vue/24/solid';
 import { router } from '@inertiajs/vue3';
 import { ref, watch } from 'vue';
 
-import AppLayout from '@/layouts/AppLayout.vue';
 import { Head, Link, usePage } from '@inertiajs/vue3';
 import { useToast } from 'vue-toastification';
 const toast = useToast();
 const page = usePage();
-// @click="router.delete(route('kotas.destroy', kota.id))"
+// @click="router.delete(route('kotas.destroy', kota.id))" 
 
 const confirmDelete = (id) => {
     if (window.confirm('Apakah yakin ingin menghapus data ini?')) {
@@ -51,52 +53,77 @@ function applyFilters() {
         },
     );
 }
+function navigateToEdit(id) {
+    router.get(route('kotas.edit', id)); // Pastikan named route sesuai dengan Laravel
+}
 </script>
 
 <template>
     <Head title="Kota" />
 
-    <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-            <div class="flex flex-col justify-between gap-2 md:mb-4 md:w-1/2 md:flex-row md:items-center">
-                <input
-                    v-model="search"
-                    type="text"
-                    placeholder="Cari..."
-                    class="rounded border p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 md:w-3/4"
-                    @input="applyFilters"
-                />
-                <Link
-                    :href="route('kotas.create')"
-                    class="rounded bg-blue-500 py-2 text-center text-white hover:bg-blue-600 md:w-1/4 md:px-4 md:py-2"
-                >
-                    Tambah Kota
-                </Link>
-                <!-- <Link :href="route('kotas.create')" class="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"> Tambah Data Kota </Link> -->
-            </div>
+    <!-- <AppLayout :breadcrumbs="breadcrumbs"> -->
+    <Navbar />
+    <div class="mx-auto flex max-w-7xl flex-col rounded-xl p-4 text-sm bg-white dark:bg-gray-900 dark:text-gray-200">
+        <div class="mb-3 hidden rounded-lg border p-2 md:block dark:border-gray-700">
+            <h2 class="text-xl text-gray-500 dark:text-gray-300">Kota</h2>
+        </div>
 
-            <table class="min-w-full border bg-white">
-                <thead>
+        <div class="flex w-full flex-col gap-2 md:flex-row md:items-center md:gap-5">
+            <!-- Input Pencarian -->
+            <input
+                v-model="search"
+                type="text"
+                placeholder="Cari..."
+                class="w-full rounded border p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:focus:ring-blue-400 dark:text-gray-200 md:w-3/4"
+                @input="applyFilters"
+            />
+
+            <!-- Tombol Tambah Kota -->
+            <Link
+                :href="route('kotas.create')"
+                class="rounded bg-blue-500 py-2 text-center text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 md:w-1/4 md:px-4 md:py-2"
+            >
+                Tambah Kota
+            </Link>
+        </div>
+
+        <!-- Scrollable Table Container -->
+        <div class="w-full overflow-x-auto py-4">
+            <table class="min-w-full table-auto divide-y divide-gray-200 dark:divide-gray-700">
+                <thead class="bg-gray-50 dark:bg-gray-800">
                     <tr>
-                        <th class="border-b p-2 text-left font-medium text-gray-700">Nama Kota</th>
-                        <th class="border-b p-2 text-left font-medium text-gray-700">Aksi</th>
+                        <th class="cursor-pointer px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">
+                            Nama Kota
+                        </th>
+                        <th class="cursor-pointer px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">
+                            Aksi
+                        </th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900">
                     <tr v-for="kota in kotas.data" :key="kota.id" class="border-b text-sm">
-                        <td class="p-2">{{ kota.nama_kota }}</td>
-                        <td class="flex space-x-2 p-2">
-                            <Link :href="route('kotas.edit', kota.id)" class="rounded bg-green-500 px-2 py-1 text-sm text-white hover:bg-green-600">
+                        <td class="whitespace-normal px-4 py-2 text-sm text-gray-500 dark:text-gray-300">{{ kota.nama_kota }}</td>
+                        <td class="space-x-1 px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300">
+                            <button
+                                @click="navigateToEdit(kota.id)"
+                                class="rounded bg-green-500 px-2 py-1 text-sm text-white hover:bg-green-600 dark:bg-green-600 dark:hover:bg-green-700"
+                            >
                                 <PencilIcon class="h-4 w-4" />
-                            </Link>
-                            <button @click="confirmDelete(kota.id)" class="rounded bg-red-500 px-2 py-1 text-sm text-white hover:bg-red-600">
+                            </button>
+                            <button
+                                @click="confirmDelete(kota.id)"
+                                class="rounded bg-red-500 px-2 py-1 text-sm text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700"
+                            >
                                 <TrashIcon class="h-4 w-4" />
                             </button>
                         </td>
                     </tr>
                 </tbody>
             </table>
-            <Pagination :links="kotas.links" />
         </div>
-    </AppLayout>
+
+        <!-- Pagination -->
+        <SimplePagination :links="kotas.links" class="dark:text-gray-300" />
+    </div>
+    <!-- </AppLayout> -->
 </template>

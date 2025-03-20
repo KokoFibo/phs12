@@ -35,30 +35,34 @@ const handleScroll = (event) => {
 
 <template>
     <div>
-        <label class="block text-sm font-medium text-gray-700">Vihara</label>
+        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Vihara</label>
         <Popover v-model:open="isOpen">
             <PopoverTrigger as-child>
-                <Button variant="outline" class="w-full justify-between">
+                <Button variant="outline" class="w-full justify-between dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200">
                     {{ selectedVihara }}
                 </Button>
             </PopoverTrigger>
-            <PopoverContent class="w-[300px] p-2">
-                <Input v-model="searchQuery" placeholder="Cari Vihara..." class="mb-2" />
+            <PopoverContent class="w-[300px] p-2 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200">
+                <Input
+                    v-model="searchQuery"
+                    placeholder="Cari Vihara..."
+                    class="mb-2 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 dark:focus:border-blue-400 dark:focus:ring-blue-400"
+                />
                 <ScrollArea class="max-h-40 overflow-auto" @wheel="handleScroll">
                     <ul v-if="filteredViharas.length">
                         <li
                             v-for="vihara in filteredViharas"
                             :key="vihara.id"
-                            class="cursor-pointer rounded-md p-2 hover:bg-gray-100"
+                            class="cursor-pointer rounded-md p-2 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-200"
                             @click="selectVihara(vihara)"
                         >
                             {{ vihara.nama_vihara }}
                         </li>
                     </ul>
-                    <p v-else class="p-2 text-sm text-gray-500">Vihara tidak ditemukan</p>
+                    <p v-else class="p-2 text-sm text-gray-500 dark:text-gray-400">Vihara tidak ditemukan</p>
                 </ScrollArea>
             </PopoverContent>
         </Popover>
-        <p v-if="errors?.vihara_id" class="text-sm text-red-500">{{ errors.vihara_id }}</p>
+        <p v-if="errors?.vihara_id" class="text-sm text-red-500 dark:text-red-400">{{ errors.vihara_id }}</p>
     </div>
 </template>
