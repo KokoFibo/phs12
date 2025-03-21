@@ -13,6 +13,18 @@ import { initializeTheme } from './composables/useAppearance';
 import Toast from 'vue-toastification';
 import 'vue-toastification/dist/index.css';
 
+declare module 'vite/client' {
+    interface ImportMetaEnv {
+        readonly VITE_APP_NAME: string;
+        [key: string]: string | boolean | undefined;
+    }
+
+    interface ImportMeta {
+        readonly env: ImportMetaEnv;
+        readonly glob: <T>(pattern: string) => Record<string, () => Promise<T>>;
+    }
+}
+
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
 createInertiaApp({
@@ -43,8 +55,6 @@ createInertiaApp({
     progress: {
         color: '#4B5563',
     },
-    preserveState: true, // Tambahkan preserve state agar scroll tidak reset saat refresh
-    preserveScroll: true, // Tambahkan preserve scroll agar posisi scroll tetap terjaga saat navigasi
 });
 
 // This will set light / dark mode on page load...
