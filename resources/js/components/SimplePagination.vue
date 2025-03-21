@@ -37,19 +37,20 @@ watch(pageInput, goToPage);
 <template>
     <div v-if="links?.length > 0" class="flex items-center justify-center gap-2 dark:bg-gray-900 dark:text-gray-200">
         <!-- Tombol First -->
-        <template v-if="links[1]?.url !== null">
-            <Link
+        <template v-if="links[0]?.url !== null">
+            <Link preserve-scroll
                 :href="links[1].url"
                 class="rounded border px-3 py-1 text-xs lg:px-4 lg:py-2 lg:text-sm text-gray-600 shadow-sm transition hover:bg-gray-100 active:scale-95 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
             >
                <ChevronDoubleLeftIcon class="h-4 w-4" />
             </Link>
         </template>
-        <span v-else class="rounded border bg-gray-200 px-3 py-1 text-xs lg:px-4 lg:py-2 lg:text-sm text-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-500">&laquo; First</span>
+        <span v-else class="rounded border bg-gray-200 px-3 py-1 text-xs lg:px-4 lg:py-2 lg:text-sm text-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-500">               <ChevronDoubleLeftIcon class="h-4 w-4" />
+</span>
 
         <!-- Tombol Previous -->
         <template v-if="links[0]?.url !== null">
-            <Link
+            <Link preserve-scroll
                 :href="links[0].url"
                 class="rounded border px-3 py-1 text-xs lg:px-4 lg:py-2 lg:text-sm text-gray-600 shadow-sm transition hover:bg-gray-100 active:scale-95 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
             >
@@ -75,7 +76,7 @@ watch(pageInput, goToPage);
 
         <!-- Tombol Next -->
         <template v-if="links[links.length - 1]?.url !== null">
-            <Link
+            <Link preserve-scroll
                 :href="links[links.length - 1].url"
                 class="rounded border px-3 py-1 text-xs lg:px-4 lg:py-2 lg:text-sm text-gray-600 shadow-sm transition hover:bg-gray-100 active:scale-95 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
             >
@@ -87,15 +88,15 @@ watch(pageInput, goToPage);
 </span>
 
         <!-- Tombol Last -->
-        <template v-if="links[links.length - 2]?.url !== null">
-            <Link
-                :href="links[links.length - 2].url"
+        <template v-if="links[links.length - 1]?.url !== null">
+            <Link preserve-scroll
+                :href="links[links.length - 1].url"
                 class="rounded border px-3 py-1 text-xs lg:px-4 lg:py-2 lg:text-sm text-gray-600 shadow-sm transition hover:bg-gray-100 active:scale-95 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
             >
                <ChevronDoubleRightIcon  class="h-4 w-4" />
             </Link>
         </template>
-        <span v-else class="rounded border bg-gray-200 px-3 py-1 text-xs lg:px-4 lg:py-2 lg:text-sm text-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-500">Last &raquo;</span>
+        <span v-else class="rounded border bg-gray-200 px-3 py-1 text-xs lg:px-4 lg:py-2 lg:text-sm text-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-500"><ChevronDoubleRightIcon  class="h-4 w-4" /></span>
     </div>
 </template>
 <style scoped>
