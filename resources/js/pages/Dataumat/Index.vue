@@ -2,9 +2,19 @@
 import Navbar from '@/components/Navbar.vue';
 // import SimplePagination from '@/components/SimplePagination.vue';
 // import AppLayout from '@/layouts/AppLayout.vue';
+// import DropdownViharaUmat from '@/components/DropdownViharaUmat.vue';
 
 import { useAuthStore } from '@/Stores/authStore';
-import { ChevronDoubleLeftIcon,ChevronDoubleRightIcon, ChevronLeftIcon, ChevronRightIcon, MagnifyingGlassIcon, PencilIcon, TrashIcon } from '@heroicons/vue/24/solid';
+import {
+    ChevronDoubleLeftIcon,
+    ChevronDoubleRightIcon,
+    ChevronLeftIcon,
+    ChevronRightIcon,
+    FunnelIcon,
+    MagnifyingGlassIcon,
+    PencilIcon,
+    TrashIcon,
+} from '@heroicons/vue/24/solid';
 
 import { Head, router, usePage } from '@inertiajs/vue3';
 import debounce from 'lodash/debounce';
@@ -61,13 +71,17 @@ const vihara_asal = ref(null);
 const tanggal_mohon_Tao_lunar = ref(null);
 
 const loading = ref(false);
+const filter_kota = ref('');
+const filter_group = ref('');
+const filter_vihara = ref('');
 
 // const pageInput = ref(pagination.current_page);
 const pageInput = ref(1);
+const toggle = ref(false);
 
-watch(pageInput, (newValue)=> {
-    goToPage(newValue)
-})
+watch(pageInput, (newValue) => {
+    goToPage(newValue);
+});
 function openDetailModal(id) {
     loading.value = true;
     router.get(
@@ -101,6 +115,28 @@ const getGenderClass = (jeniskelamin) => {
     return ['乾', '童'].includes(jeniskelamin) ? 'text-blue-500' : 'text-pink-500';
 };
 
+watch(filter_kota, (newValue) => {
+    if (newValue) {
+        filter_group.value = '';
+        filter_vihara.value = '';
+    }
+});
+
+watch(filter_group, (newValue) => {
+    if (newValue) {
+        filter_kota.value = '';
+        filter_vihara.value = '';
+    }
+});
+
+watch(filter_vihara, (newValue) => {
+    if (newValue) {
+        filter_group.value = '';
+        filter_kota.value = '';
+        fetchData();
+    }
+});
+
 function fetchData(page = 1) {
     router.get(
         '/dataumats',
@@ -110,6 +146,9 @@ function fetchData(page = 1) {
             sort_order: sortOrder.value,
             per_page: perPage.value,
             page: page,
+            filter_kota: filter_kota.value,
+            filter_group: filter_group.value,
+            filter_vihara: filter_vihara.value,
         },
         {
             preserveState: true,
@@ -137,7 +176,7 @@ const handleSearch = debounce(() => {
 }, 500);
 
 function goToPage(page) {
-    if(page == null) pageInput.value = 1;
+    if (page == null) pageInput.value = 1;
     else pageInput.value = page;
     fetchData(page);
 }
@@ -160,41 +199,139 @@ function navigateToAddData() {
 function navigateToEdit(id) {
     router.get(route('dataumats.edit', id)); // Pastikan named route sesuai dengan Laravel
 }
-
-
+defineProps({
+    kotas_list: Object,
+    groups_list: Object,
+    viharas_list: Array,
+});
 </script>
 
 <template>
-<Navbar />
+    <Navbar />
     <Head title="Data Umat" />
     <!-- <Navbar /> -->
-    
-    <div class="mx-auto flex max-w-7xl flex-col rounded-xl p-4 text-sm bg-white dark:bg-gray-900 dark:text-gray-200">
-        <div class="mb-3 hidden rounded-lg border p-2 lg:block dark:border-gray-700">
+
+    <div class="mx-auto flex max-w-7xl flex-col rounded-xl bg-white p-4 text-sm dark:bg-gray-900 dark:text-gray-200">
+        <div class="mb-3 hidden rounded-lg border p-2 dark:border-gray-700 lg:block">
             <h2 class="text-xl text-gray-500 dark:text-gray-300">Data Umat</h2>
         </div>
-        <div class="flex w-full flex-col gap-2 lg:flex-row lg:items-center lg:gap-5">
-            <div class="flex flex-col gap-2 lg:flex-row lg:gap-5">
-                <div class="flex w-full items-center justify-between gap-3">
-                    <input
-                        v-model="searchQuery"
-                        type="text"
-                        placeholder="Cari data..."
-                        class="w-3/4 rounded border p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:focus:ring-blue-400 dark:text-gray-200"
-                        @input="handleSearch"
-                    />
+        <div class="flex w-full flex-col gap-2 lg:flex-col lg:items-center lg:gap-5">
+            <div class="justify-betwen flex w-full items-center gap-3">
+                <input
+                    v-model="searchQuery"
+                    type="text"
+                    placeholder="Cari data..."
+                    class="w-3/5 rounded border p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:focus:ring-blue-400"
+                    @input="handleSearch"
+                />
+                <select
+                    v-model="perPage"
+                    @change="fetchData"
+                    class="w-1/5 rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:focus:border-blue-400 dark:focus:ring-blue-400"
+                >
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="50">50</option>
+                </select>
+                <button
+                    @click="navigateToAddData"
+                    class="hidden w-1/5 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 dark:bg-blue-600 dark:text-white dark:hover:bg-blue-700 lg:block"
+                >
+                    Tambah Data
+                </button>
+                <button @click="toggle = !toggle" class="rounded-lg bg-blue-500 p-2 text-right lg:hidden">
+                    <FunnelIcon class="h-4 w-4" />
+                </button>
+            </div>
+
+            <!-- <DropdownViharaUmat  
+                            v-model="filter_vihara"
+                            :viharas="viharas_list"
+                            :errors="errors"
+                            class="mt-1  dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200"
+                        /> -->
+            <div v-if="toggle" class="flex w-full items-center justify-between gap-3">
+                <select
+                    v-model="filter_kota"
+                    @change="fetchData"
+                    class="block w-1/3 rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:focus:border-blue-400 dark:focus:ring-blue-400"
+                >
+                    <option value="" v-if="toggle">Kota</option>
+                    <option value="" v-else>Filter by Kota</option>
+                    <option v-for="kota in kotas_list" :key="kota.id" :value="kota.id">
+                        {{ kota.nama_kota }}
+                    </option>
+                </select>
+
+                <select
+                    v-model="filter_group"
+                    @change="fetchData"
+                    class="block w-1/3 rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:focus:border-blue-400 dark:focus:ring-blue-400"
+                >
+                    <option value="" v-if="toggle">Group</option>
+                    <option value="" v-else>Filter by Group</option>
+                    <option v-for="group in groups_list" :key="group.id" :value="group.id">
+                        {{ group.nama_group }}
+                    </option>
+                </select>
+
+                <select
+                    v-model="filter_vihara"
+                    @change="fetchData"
+                    class="block w-1/3 rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:focus:border-blue-400 dark:focus:ring-blue-400"
+                >
+                    <option value="" v-if="toggle">Vihara</option>
+                    <option value="" v-else>Filter by Vihara</option>
+                    <option v-for="vihara in viharas_list" :key="vihara.id" :value="vihara.id">
+                        {{ vihara.nama_vihara }}
+                    </option>
+                </select>
+            </div>
+                <div  v-if="!toggle" class=" hidden lg:flex w-full items-center gap-3">
                     <select
-                        v-model="perPage"
+                        v-model="filter_kota"
                         @change="fetchData"
-                        class="w-1/4 rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 dark:focus:border-blue-400 dark:focus:ring-blue-400"
+                        class="block w-1/3 rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:focus:border-blue-400 dark:focus:ring-blue-400"
                     >
-                        <option value="10">10</option>
-                        <option value="20">20</option>
-                        <option value="50">50</option>
+                        <option value="" v-if="toggle">Kota</option>
+                        <option value="" v-else>Filter by Kota</option>
+                        <option v-for="kota in kotas_list" :key="kota.id" :value="kota.id">
+                            {{ kota.nama_kota }}
+                        </option>
+                    </select>
+
+                    <select
+                        v-model="filter_group"
+                        @change="fetchData"
+                        class="block w-1/3 rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:focus:border-blue-400 dark:focus:ring-blue-400"
+                    >
+                        <option value="" v-if="toggle">Group</option>
+                        <option value="" v-else>Filter by Group</option>
+                        <option v-for="group in groups_list" :key="group.id" :value="group.id">
+                            {{ group.nama_group }}
+                        </option>
+                    </select>
+
+                    <select
+                        v-model="filter_vihara"
+                        @change="fetchData"
+                        class="block w-1/3 rounded-md border border-gray-300 p-2 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:focus:border-blue-400 dark:focus:ring-blue-400"
+                    >
+                        <option value="" v-if="toggle">Vihara</option>
+                        <option value="" v-else>Filter by Vihara</option>
+                        <option v-for="vihara in viharas_list" :key="vihara.id" :value="vihara.id">
+                            {{ vihara.nama_vihara }}
+                        </option>
                     </select>
                 </div>
+            <div class="lg:hidden">
+                <button
+                    @click="navigateToAddData"
+                    class="block w-full rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 dark:bg-blue-600 dark:text-white dark:hover:bg-blue-700"
+                >
+                    Tambah Data
+                </button>
             </div>
-            <button @click="navigateToAddData" class="block rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 dark:text-white">Tambah Data</button>
         </div>
 
         <!-- Scrollable Table Container -->
@@ -277,21 +414,20 @@ function navigateToEdit(id) {
                             <div class="flex space-x-2">
                                 <button
                                     @click="navigateToEdit(dataumat.id)"
-                                    class="rounded bg-green-500 px-2 py-1 text-white hover:bg-yellow-600 dark:bg-green-600 dark:hover:bg-green-700 dark:text-white"
+                                    class="rounded bg-green-500 px-2 py-1 text-white hover:bg-yellow-600 dark:bg-green-600 dark:text-white dark:hover:bg-green-700"
                                 >
-                               
                                     <PencilIcon class="h-4 w-4" />
                                 </button>
                                 <button
                                     v-if="userStore.user_role > 1"
                                     @click="confirmDelete(dataumat.id)"
-                                    class="rounded bg-red-500 px-2 py-1 text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 dark:text-white"
+                                    class="rounded bg-red-500 px-2 py-1 text-white hover:bg-red-600 dark:bg-red-600 dark:text-white dark:hover:bg-red-700"
                                 >
                                     <TrashIcon class="h-4 w-4" />
                                 </button>
                                 <button
                                     @click="openDetailModal(dataumat.id)"
-                                    class="rounded bg-blue-500 px-2 py-1 text-white hover:bg-red-600 dark:bg-blue-600 dark:hover:bg-blue-700 dark:text-white"
+                                    class="rounded bg-blue-500 px-2 py-1 text-white hover:bg-red-600 dark:bg-blue-600 dark:text-white dark:hover:bg-blue-700"
                                 >
                                     <MagnifyingGlassIcon class="h-4 w-4" />
                                 </button>
@@ -322,90 +458,103 @@ function navigateToEdit(id) {
                 </tbody>
             </table>
             <!-- Modal Detail -->
-         <transition name="fade">
-    <div v-if="isModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-        <!-- Modal Container -->
-        <div class="max-h-screen w-full overflow-y-auto rounded-lg bg-white p-6 shadow-lg dark:bg-gray-800 dark:text-gray-200 sm:max-w-lg">
-            <h2 class="text-center text-lg font-semibold dark:text-gray-200">Detail Data Umat</h2>
-            <div v-if="loading" class="py-4 text-center text-gray-500 dark:text-gray-400">Loading...</div>
-            <div v-else-if="selectedUmat" class="mt-4 grid grid-cols-1 gap-6 text-sm lg:grid-cols-2">
-                <!-- Kolom 1 -->
-                <div class="text-sm leading-8 dark:text-gray-300">
-                    <p><strong>ID:</strong> {{ selectedUmat.id }}</p>
-                    <p><strong>Nama:</strong> {{ selectedUmat.nama_umat }}</p>
-                    <p><strong>Alias:</strong> {{ selectedUmat.nama_alias }}</p>
-                    <p><strong>Mandarin:</strong> {{ selectedUmat.mandarin }}</p>
-                    <p><strong>Umur:</strong> {{ umur }}</p>
-                    <p><strong>Gender:</strong> {{ chienkhun }}</p>
-                    <p><strong>Pengajak:</strong> {{ selectedUmat.pengajak }}</p>
-                    <p><strong>Pandita:</strong> {{ selectedUmat.pandita.nama_pandita }}</p>
-                    <p><strong>Tanggal Mohon Tao:</strong> {{ selectedUmat.tgl_mohonTao }}</p>
-                    <p><strong>Tanggal Mohon Tao (Lunar):</strong> {{ tanggal_mohon_Tao_lunar }}</p>
-                    <p><strong>Group:</strong> {{ selectedUmat.group.nama_group }}</p>
-                    <p><strong>Alamat:</strong> {{ selectedUmat.alamat }}</p>
-                    <p><strong>Keterangan:</strong> {{ selectedUmat.keterangan }}</p>
+            <transition name="fade">
+                <div v-if="isModalOpen" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                    <!-- Modal Container -->
+                    <div
+                        class="max-h-screen w-full overflow-y-auto rounded-lg bg-white p-6 shadow-lg dark:bg-gray-800 dark:text-gray-200 sm:max-w-lg"
+                    >
+                        <h2 class="text-center text-lg font-semibold dark:text-gray-200">Detail Data Umat</h2>
+                        <div v-if="loading" class="py-4 text-center text-gray-500 dark:text-gray-400">Loading...</div>
+                        <div v-else-if="selectedUmat" class="mt-4 grid grid-cols-1 gap-6 text-sm lg:grid-cols-2">
+                            <!-- Kolom 1 -->
+                            <div class="text-sm leading-8 dark:text-gray-300">
+                                <p><strong>ID:</strong> {{ selectedUmat.id }}</p>
+                                <p><strong>Nama:</strong> {{ selectedUmat.nama_umat }}</p>
+                                <p><strong>Alias:</strong> {{ selectedUmat.nama_alias }}</p>
+                                <p><strong>Mandarin:</strong> {{ selectedUmat.mandarin }}</p>
+                                <p><strong>Umur:</strong> {{ umur }}</p>
+                                <p><strong>Gender:</strong> {{ chienkhun }}</p>
+                                <p><strong>Pengajak:</strong> {{ selectedUmat.pengajak }}</p>
+                                <p><strong>Pandita:</strong> {{ selectedUmat.pandita.nama_pandita }}</p>
+                                <p><strong>Tanggal Mohon Tao:</strong> {{ selectedUmat.tgl_mohonTao }}</p>
+                                <p><strong>Tanggal Mohon Tao (Lunar):</strong> {{ tanggal_mohon_Tao_lunar }}</p>
+                                <p><strong>Group:</strong> {{ selectedUmat.group.nama_group }}</p>
+                                <p><strong>Alamat:</strong> {{ selectedUmat.alamat }}</p>
+                                <p><strong>Keterangan:</strong> {{ selectedUmat.keterangan }}</p>
+                            </div>
+                            <!-- Kolom 2 -->
+                            <div class="text-sm leading-8 dark:text-gray-300">
+                                <p><strong>Kota:</strong> {{ selectedUmat.kota.nama_kota }}</p>
+                                <p><strong>Group:</strong> {{ selectedUmat.group.nama_group }}</p>
+                                <p><strong>Vihara Aktif:</strong> {{ selectedUmat.vihara.nama_vihara }}</p>
+                                <p><strong>Vihara Asal:</strong> {{ vihara_asal }}</p>
+                                <p><strong>Pandita:</strong> {{ selectedUmat.pandita.nama_pandita }}</p>
+                                <p><strong>HP:</strong> {{ selectedUmat.hp }}</p>
+                                <p><strong>Telp:</strong> {{ selectedUmat.telp }}</p>
+                                <p><strong>Penjamin:</strong> {{ selectedUmat.penjamin }}</p>
+                                <p><strong>Tanggal Sidang Dharma 3 Hari :</strong> {{ selectedUmat.tgl_sd3h }}</p>
+                                <p><strong>Tanggal Vegetarian Total :</strong> {{ selectedUmat.tgl_vtotal }}</p>
+                                <p><strong>Kota:</strong> {{ selectedUmat.kota.nama_kota }}</p>
+                                <p><strong>Vihara:</strong> {{ selectedUmat.vihara.nama_vihara }}</p>
+                                <p><strong>Status:</strong> {{ selectedUmat.status }}</p>
+                            </div>
+                        </div>
+                        <!-- Tombol Tutup -->
+                        <button
+                            @click="closeModal"
+                            class="mt-6 w-full rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600 dark:bg-red-600 dark:text-white dark:hover:bg-red-700"
+                        >
+                            Tutup
+                        </button>
+                    </div>
                 </div>
-                <!-- Kolom 2 -->
-                <div class="text-sm leading-8 dark:text-gray-300">
-                    <p><strong>Kota:</strong> {{ selectedUmat.kota.nama_kota }}</p>
-                    <p><strong>Group:</strong> {{ selectedUmat.group.nama_group }}</p>
-                    <p><strong>Vihara Aktif:</strong> {{ selectedUmat.vihara.nama_vihara }}</p>
-                    <p><strong>Vihara Asal:</strong> {{ vihara_asal }}</p>
-                    <p><strong>Pandita:</strong> {{ selectedUmat.pandita.nama_pandita }}</p>
-                    <p><strong>HP:</strong> {{ selectedUmat.hp }}</p>
-                    <p><strong>Telp:</strong> {{ selectedUmat.telp }}</p>
-                    <p><strong>Penjamin:</strong> {{ selectedUmat.penjamin }}</p>
-                    <p><strong>Tanggal Sidang Dharma 3 Hari :</strong> {{ selectedUmat.tgl_sd3h }}</p>
-                    <p><strong>Tanggal Vegetarian Total :</strong> {{ selectedUmat.tgl_vtotal }}</p>
-                    <p><strong>Kota:</strong> {{ selectedUmat.kota.nama_kota }}</p>
-                    <p><strong>Vihara:</strong> {{ selectedUmat.vihara.nama_vihara }}</p>
-                    <p><strong>Status:</strong> {{ selectedUmat.status }}</p>
-                </div>
-            </div>
-            <!-- Tombol Tutup -->
-            <button @click="closeModal" class="mt-6 w-full rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600 dark:bg-red-600 dark:hover:bg-red-700 dark:text-white">
-                Tutup
-            </button>
-        </div>
-    </div>
-</transition>
+            </transition>
         </div>
         <!-- Pagination -->
-<!-- ok1 -->
+        <!-- ok1 -->
         <!-- <div class="mt-4 flex mx-auto items-center gap-5"> -->
-        <div class=" mt-3 flex items-center justify-center gap-2 dark:bg-gray-900 dark:text-gray-200">
-             
-            <button  :disabled="pagination.current_page == 1" class="rounded border px-3 py-1 text-xs lg:px-4 lg:py-2 lg:text-sm text-gray-600 shadow-sm transition hover:bg-gray-100 active:scale-95 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700" @click="goToPage(pagination.first_page)">               <ChevronDoubleLeftIcon class="h-4 w-4" />
-</button>
+        <div class="mt-3 flex items-center justify-center gap-2 dark:bg-gray-900 dark:text-gray-200">
+            <button
+                :disabled="pagination.current_page == 1"
+                class="rounded border px-3 py-1 text-xs text-gray-600 shadow-sm transition hover:bg-gray-100 active:scale-95 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 lg:px-4 lg:py-2 lg:text-sm"
+                @click="goToPage(pagination.first_page)"
+            >
+                <ChevronDoubleLeftIcon class="h-4 w-4" />
+            </button>
             <button
                 :disabled="pagination.current_page == 1"
                 @click="goToPage(pagination.current_page - 1)"
-                 class="rounded border px-3 py-1 text-xs lg:px-4 lg:py-2 lg:text-sm text-gray-600 shadow-sm transition hover:bg-gray-100 active:scale-95 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+                class="rounded border px-3 py-1 text-xs text-gray-600 shadow-sm transition hover:bg-gray-100 active:scale-95 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 lg:px-4 lg:py-2 lg:text-sm"
             >
-                              <ChevronLeftIcon class="h-4 w-4" />
-
+                <ChevronLeftIcon class="h-4 w-4" />
             </button>
             <!-- <span class="text-sm text-gray-700 dark:text-gray-300"> Halaman {{ pagination.current_page }} dari {{ pagination.last_page }} </span> -->
             <!-- Input Halaman -->
-        <div class="flex items-center gap-1 text-xs lg:text-sm">
-            <input
-                v-model.number="pageInput"
-                type="number"
-                min="1"
-                :max="pagination.last_page"
-                class="w-16  rounded border px-1 py-1   text-center shadow focus:border-blue-500 focus:ring focus:ring-blue-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 dark:focus:border-blue-400 dark:focus:ring-blue-400"
-            />
-            <span class="text-gray-600 dark:text-gray-300 ">/ {{ pagination.last_page }}</span>
-        </div>
+            <div class="flex items-center gap-1 text-xs lg:text-sm">
+                <input
+                    v-model.number="pageInput"
+                    type="number"
+                    min="1"
+                    :max="pagination.last_page"
+                    class="w-16 rounded border px-1 py-1 text-center shadow focus:border-blue-500 focus:ring focus:ring-blue-200 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:focus:border-blue-400 dark:focus:ring-blue-400"
+                />
+                <span class="text-gray-600 dark:text-gray-300">/ {{ pagination.last_page }}</span>
+            </div>
             <button
                 :disabled="pagination.current_page === pagination.last_page"
                 @click="goToPage(pagination.current_page + 1)"
-                 class="rounded border px-3 py-1 text-xs lg:px-4 lg:py-2 lg:text-sm text-gray-600 shadow-sm transition hover:bg-gray-100 active:scale-95 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+                class="rounded border px-3 py-1 text-xs text-gray-600 shadow-sm transition hover:bg-gray-100 active:scale-95 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 lg:px-4 lg:py-2 lg:text-sm"
             >
-                               <ChevronRightIcon class="h-4 w-4" />
-
+                <ChevronRightIcon class="h-4 w-4" />
             </button>
-            <button :disabled="pagination.current_page === pagination.last_page"  class="rounded border px-3 py-1 text-xs lg:px-4 lg:py-2 lg:text-sm text-gray-600 shadow-sm transition hover:bg-gray-100 active:scale-95 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700" @click="goToPage(pagination.last_page)"><ChevronDoubleRightIcon class="h-4 w-4" /></button>
+            <button
+                :disabled="pagination.current_page === pagination.last_page"
+                class="rounded border px-3 py-1 text-xs text-gray-600 shadow-sm transition hover:bg-gray-100 active:scale-95 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 lg:px-4 lg:py-2 lg:text-sm"
+                @click="goToPage(pagination.last_page)"
+            >
+                <ChevronDoubleRightIcon class="h-4 w-4" />
+            </button>
         </div>
     </div>
 </template>
