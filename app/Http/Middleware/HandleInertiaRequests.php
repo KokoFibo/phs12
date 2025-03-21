@@ -48,6 +48,10 @@ class HandleInertiaRequests extends Middleware
             'flash' => [
                 'toast' => fn() => $request->session()->get('toast'),
             ],
+            'pwa' => [
+                'enabled' => true,
+                'manifest' => asset('manifest.json'),
+            ],
         ];
     }
 }
