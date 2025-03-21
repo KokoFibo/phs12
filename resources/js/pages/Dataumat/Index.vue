@@ -4,7 +4,8 @@ import Navbar from '@/components/Navbar.vue';
 // import AppLayout from '@/layouts/AppLayout.vue';
 
 import { useAuthStore } from '@/Stores/authStore';
-import { ChevronLeftIcon, ChevronRightIcon, MagnifyingGlassIcon, PencilIcon, TrashIcon } from '@heroicons/vue/24/solid';
+import { ChevronDoubleLeftIcon,ChevronDoubleRightIcon, ChevronLeftIcon, ChevronRightIcon, MagnifyingGlassIcon, PencilIcon, TrashIcon } from '@heroicons/vue/24/solid';
+
 import { Head, router, usePage } from '@inertiajs/vue3';
 import debounce from 'lodash/debounce';
 import { onMounted, ref, watch } from 'vue';
@@ -169,11 +170,11 @@ function navigateToEdit(id) {
     <!-- <Navbar /> -->
     
     <div class="mx-auto flex max-w-7xl flex-col rounded-xl p-4 text-sm bg-white dark:bg-gray-900 dark:text-gray-200">
-        <div class="mb-3 hidden rounded-lg border p-2 md:block dark:border-gray-700">
+        <div class="mb-3 hidden rounded-lg border p-2 lg:block dark:border-gray-700">
             <h2 class="text-xl text-gray-500 dark:text-gray-300">Data Umat</h2>
         </div>
-        <div class="flex w-full flex-col gap-2 md:flex-row md:items-center md:gap-5">
-            <div class="flex flex-col gap-2 md:flex-row md:gap-5">
+        <div class="flex w-full flex-col gap-2 lg:flex-row lg:items-center lg:gap-5">
+            <div class="flex flex-col gap-2 lg:flex-row lg:gap-5">
                 <div class="flex w-full items-center justify-between gap-3">
                     <input
                         v-model="searchQuery"
@@ -278,6 +279,7 @@ function navigateToEdit(id) {
                                     @click="navigateToEdit(dataumat.id)"
                                     class="rounded bg-green-500 px-2 py-1 text-white hover:bg-yellow-600 dark:bg-green-600 dark:hover:bg-green-700 dark:text-white"
                                 >
+                               
                                     <PencilIcon class="h-4 w-4" />
                                 </button>
                                 <button
@@ -326,7 +328,7 @@ function navigateToEdit(id) {
         <div class="max-h-screen w-full overflow-y-auto rounded-lg bg-white p-6 shadow-lg dark:bg-gray-800 dark:text-gray-200 sm:max-w-lg">
             <h2 class="text-center text-lg font-semibold dark:text-gray-200">Detail Data Umat</h2>
             <div v-if="loading" class="py-4 text-center text-gray-500 dark:text-gray-400">Loading...</div>
-            <div v-else-if="selectedUmat" class="mt-4 grid grid-cols-1 gap-6 text-sm md:grid-cols-2">
+            <div v-else-if="selectedUmat" class="mt-4 grid grid-cols-1 gap-6 text-sm lg:grid-cols-2">
                 <!-- Kolom 1 -->
                 <div class="text-sm leading-8 dark:text-gray-300">
                     <p><strong>ID:</strong> {{ selectedUmat.id }}</p>
@@ -369,38 +371,41 @@ function navigateToEdit(id) {
 </transition>
         </div>
         <!-- Pagination -->
-
+<!-- ok1 -->
         <!-- <div class="mt-4 flex mx-auto items-center gap-5"> -->
         <div class=" lg:mt-3 flex items-center justify-center gap-2 dark:bg-gray-900 dark:text-gray-200">
              
-            <button  class="rounded border px-3 py-1 text-xs md:px-4 md:py-2 md:text-sm text-gray-600 shadow-sm transition hover:bg-gray-100 active:scale-95 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700" @click="goToPage(pagination.first_page)"> &laquo; First</button>
+            <button  class="rounded border px-2 py-1 text-xs lg:px-4 lg:py-2 lg:text-sm text-gray-600 shadow-sm transition hover:bg-gray-100 active:scale-95 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700" @click="goToPage(pagination.first_page)">               <ChevronDoubleLeftIcon class="h-4 w-4" />
+</button>
             <button
                 :disabled="pagination.current_page == 1"
                 @click="goToPage(pagination.current_page - 1)"
-                 class="rounded border px-3 py-1 text-xs md:px-4 md:py-2 md:text-sm text-gray-600 shadow-sm transition hover:bg-gray-100 active:scale-95 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+                 class="rounded border px-2 py-1 text-xs lg:px-4 lg:py-2 lg:text-sm text-gray-600 shadow-sm transition hover:bg-gray-100 active:scale-95 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
             >
-               &lsaquo; Prev
+                              <ChevronLeftIcon class="h-4 w-4" />
+
             </button>
             <!-- <span class="text-sm text-gray-700 dark:text-gray-300"> Halaman {{ pagination.current_page }} dari {{ pagination.last_page }} </span> -->
             <!-- Input Halaman -->
-        <div class="flex items-center gap-1 text-xs md:text-sm">
+        <div class="flex items-center gap-1 text-xs lg:text-sm">
             <input
                 v-model.number="pageInput"
                 type="number"
                 min="1"
                 :max="pagination.last_page"
-                class="w-12 md:w-16 rounded border px-1 py-0.5 md:px-2 md:py-1 text-center shadow focus:border-blue-500 focus:ring focus:ring-blue-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 dark:focus:border-blue-400 dark:focus:ring-blue-400"
+                class="w-12 lg:w-16 rounded border px-1 py-1 lg:px-2  text-center shadow focus:border-blue-500 focus:ring focus:ring-blue-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 dark:focus:border-blue-400 dark:focus:ring-blue-400"
             />
-            <span class="text-gray-600 dark:text-gray-300">/ {{ pagination.last_page }}</span>
+            <span class="text-gray-600 dark:text-gray-300 ">/ {{ pagination.last_page }}</span>
         </div>
             <button
                 :disabled="pagination.current_page === pagination.last_page"
                 @click="goToPage(pagination.current_page + 1)"
-                 class="rounded border px-3 py-1 text-xs md:px-4 md:py-2 md:text-sm text-gray-600 shadow-sm transition hover:bg-gray-100 active:scale-95 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+                 class="rounded border px-2 py-1 text-xs lg:px-4 lg:py-2 lg:text-sm text-gray-600 shadow-sm transition hover:bg-gray-100 active:scale-95 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
             >
-                Next &rsaquo;
+                               <ChevronRightIcon class="h-4 w-4" />
+
             </button>
-            <button  class="rounded border px-3 py-1 text-xs md:px-4 md:py-2 md:text-sm text-gray-600 shadow-sm transition hover:bg-gray-100 active:scale-95 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700" @click="goToPage(pagination.last_page)"> Last &raquo;</button>
+            <button  class="rounded border px-2 py-1 text-xs lg:px-4 lg:py-2 lg:text-sm text-gray-600 shadow-sm transition hover:bg-gray-100 active:scale-95 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700" @click="goToPage(pagination.last_page)"><ChevronDoubleRightIcon class="h-4 w-4" /></button>
         </div>
     </div>
 </template>

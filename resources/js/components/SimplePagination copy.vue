@@ -1,8 +1,6 @@
 <script setup>
 import { ref, computed, watch } from 'vue';
 import { Link, router } from '@inertiajs/vue3';
-import { ChevronDoubleLeftIcon,ChevronDoubleRightIcon, ChevronLeftIcon, ChevronRightIcon, MagnifyingGlassIcon, PencilIcon, TrashIcon } from '@heroicons/vue/24/solid';
-
 
 const props = defineProps({
     links: Array,
@@ -31,7 +29,6 @@ const goToPage = () => {
 
 // Pindah halaman otomatis saat input berubah
 watch(pageInput, goToPage);
-// import { ChevronDoubleLeftIcon,ChevronDoubleRightIcon, ChevronLeftIcon, ChevronRightIcon, MagnifyingGlassIcon, PencilIcon, TrashIcon } from '@heroicons/vue/24/solid';
 </script>
 
 <template>
@@ -40,25 +37,23 @@ watch(pageInput, goToPage);
         <template v-if="links[1]?.url !== null">
             <Link
                 :href="links[1].url"
-                class="rounded border px-2 py-1 text-xs lg:px-4 lg:py-2 lg:text-sm text-gray-600 shadow-sm transition hover:bg-gray-100 active:scale-95 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+                class="rounded border px-3 py-1 text-xs lg:px-4 lg:py-2 lg:text-sm text-gray-600 shadow-sm transition hover:bg-gray-100 active:scale-95 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
             >
-               <ChevronDoubleLeftIcon class="h-4 w-4" />
+                &laquo; First
             </Link>
         </template>
-        <span v-else class="rounded border bg-gray-200 px-2 py-1 text-xs lg:px-4 lg:py-2 lg:text-sm text-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-500">&laquo; First</span>
+        <span v-else class="rounded border bg-gray-200 px-3 py-1 text-xs lg:px-4 lg:py-2 lg:text-sm text-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-500">&laquo; First</span>
 
         <!-- Tombol Previous -->
         <template v-if="links[0]?.url !== null">
             <Link
                 :href="links[0].url"
-                class="rounded border px-2 py-1 text-xs lg:px-4 lg:py-2 lg:text-sm text-gray-600 shadow-sm transition hover:bg-gray-100 active:scale-95 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+                class="rounded border px-3 py-1 text-xs lg:px-4 lg:py-2 lg:text-sm text-gray-600 shadow-sm transition hover:bg-gray-100 active:scale-95 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
             >
-                                            <ChevronLeftIcon  class="h-4 w-4" />
-
+                &lsaquo; Prev
             </Link>
         </template>
-        <span v-else class="rounded border bg-gray-200 px-2 py-1 text-xs lg:px-4 lg:py-2 lg:text-sm text-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-500">                                            <ChevronLeftIcon  class="h-4 w-4" />
-</span>
+        <span v-else class="rounded border bg-gray-200 px-3 py-1 text-xs lg:px-4 lg:py-2 lg:text-sm text-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-500">&lsaquo; Prev</span>
 
         <!-- Input Halaman -->
         <div class="flex items-center gap-1 text-xs lg:text-sm">
@@ -77,25 +72,23 @@ watch(pageInput, goToPage);
         <template v-if="links[links.length - 1]?.url !== null">
             <Link
                 :href="links[links.length - 1].url"
-                class="rounded border px-2 py-1 text-xs lg:px-4 lg:py-2 lg:text-sm text-gray-600 shadow-sm transition hover:bg-gray-100 active:scale-95 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+                class="rounded border px-3 py-1 text-xs lg:px-4 lg:py-2 lg:text-sm text-gray-600 shadow-sm transition hover:bg-gray-100 active:scale-95 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
             >
-                             <ChevronRightIcon  class="h-4 w-4" />
-
+                Next &rsaquo;
             </Link>
         </template>
-        <span v-else class="rounded border bg-gray-200 px-2 py-1 text-xs lg:px-4 lg:py-2 lg:text-sm text-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-500">                             <ChevronRightIcon  class="h-4 w-4" />
-</span>
+        <span v-else class="rounded border bg-gray-200 px-3 py-1 text-xs lg:px-4 lg:py-2 lg:text-sm text-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-500">Next &rsaquo;</span>
 
         <!-- Tombol Last -->
         <template v-if="links[links.length - 2]?.url !== null">
             <Link
                 :href="links[links.length - 2].url"
-                class="rounded border px-2 py-1 text-xs lg:px-4 lg:py-2 lg:text-sm text-gray-600 shadow-sm transition hover:bg-gray-100 active:scale-95 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
+                class="rounded border px-3 py-1 text-xs lg:px-4 lg:py-2 lg:text-sm text-gray-600 shadow-sm transition hover:bg-gray-100 active:scale-95 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
             >
-               <ChevronDoubleRightIcon  class="h-4 w-4" />
+                Last &raquo;
             </Link>
         </template>
-        <span v-else class="rounded border bg-gray-200 px-2 py-1 text-xs lg:px-4 lg:py-2 lg:text-sm text-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-500">Last &raquo;</span>
+        <span v-else class="rounded border bg-gray-200 px-3 py-1 text-xs lg:px-4 lg:py-2 lg:text-sm text-gray-400 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-500">Last &raquo;</span>
     </div>
 </template>
 <style scoped>
