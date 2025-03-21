@@ -375,7 +375,7 @@ function navigateToEdit(id) {
         <!-- <div class="mt-4 flex mx-auto items-center gap-5"> -->
         <div class=" mt-3 flex items-center justify-center gap-2 dark:bg-gray-900 dark:text-gray-200">
              
-            <button  class="rounded border px-3 py-1 text-xs lg:px-4 lg:py-2 lg:text-sm text-gray-600 shadow-sm transition hover:bg-gray-100 active:scale-95 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700" @click="goToPage(pagination.first_page)">               <ChevronDoubleLeftIcon class="h-4 w-4" />
+            <button  :disabled="pagination.current_page == 1" class="rounded border px-3 py-1 text-xs lg:px-4 lg:py-2 lg:text-sm text-gray-600 shadow-sm transition hover:bg-gray-100 active:scale-95 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700" @click="goToPage(pagination.first_page)">               <ChevronDoubleLeftIcon class="h-4 w-4" />
 </button>
             <button
                 :disabled="pagination.current_page == 1"
@@ -393,7 +393,7 @@ function navigateToEdit(id) {
                 type="number"
                 min="1"
                 :max="pagination.last_page"
-                class="w-12 lg:w-16 rounded border px-1 py-1 lg:px-3  text-center shadow focus:border-blue-500 focus:ring focus:ring-blue-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 dark:focus:border-blue-400 dark:focus:ring-blue-400"
+                class="w-16  rounded border px-1 py-1   text-center shadow focus:border-blue-500 focus:ring focus:ring-blue-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 dark:focus:border-blue-400 dark:focus:ring-blue-400"
             />
             <span class="text-gray-600 dark:text-gray-300 ">/ {{ pagination.last_page }}</span>
         </div>
@@ -405,7 +405,7 @@ function navigateToEdit(id) {
                                <ChevronRightIcon class="h-4 w-4" />
 
             </button>
-            <button  class="rounded border px-3 py-1 text-xs lg:px-4 lg:py-2 lg:text-sm text-gray-600 shadow-sm transition hover:bg-gray-100 active:scale-95 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700" @click="goToPage(pagination.last_page)"><ChevronDoubleRightIcon class="h-4 w-4" /></button>
+            <button :disabled="pagination.current_page === pagination.last_page"  class="rounded border px-3 py-1 text-xs lg:px-4 lg:py-2 lg:text-sm text-gray-600 shadow-sm transition hover:bg-gray-100 active:scale-95 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700" @click="goToPage(pagination.last_page)"><ChevronDoubleRightIcon class="h-4 w-4" /></button>
         </div>
     </div>
 </template>
