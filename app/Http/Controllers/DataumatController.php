@@ -96,6 +96,13 @@ class DataumatController extends Controller
         // Sorting dan pagination
         // $query->orderBy($sortBy, $sortOrder);
         $query->orderBy('id', 'desc');
+        $query->when($request->filter_kota, function ($q) use ($request) {
+            $q->where('kota_id', $request->filter_kota);
+        })->when($request->filter_group, function ($q) use ($request) {
+            $q->where('group_id', $request->filter_group);
+        })->when($request->filter_vihara, function ($q) use ($request) {
+            $q->where('vihara_id', $request->filter_vihara);
+        });
         $dataumats = $query->paginate($perPage);
 
         // Ambil data referensi
@@ -103,6 +110,11 @@ class DataumatController extends Controller
         $groups = Group::all()->keyBy('id');
         $viharas = Vihara::all()->keyBy('id');
         $panditas = Pandita::all()->keyBy('id');
+
+        $kotas_list = Kota::orderBy('nama_kota', 'asc')->get();
+        $groups_list = Group::orderBy('nama_group', 'asc')->get();
+        $viharas_list = Vihara::all();
+
 
         // Tambahkan perhitungan umur & nama berdasarkan ID
         $dataumats->getCollection()->transform(function ($umat) use ($kotas, $groups, $viharas, $panditas) {
@@ -149,6 +161,9 @@ class DataumatController extends Controller
             'groups' => $groups->values(),
             'viharas' => $viharas->values(),
             'panditas' => $panditas->values(),
+            'kotas_list' => $kotas_list,
+            'groups_list' => $groups_list,
+            'viharas_list' => $viharas_list,
             'pagination' => [
                 'total' => $dataumats->total(),
                 'per_page' => $dataumats->perPage(),

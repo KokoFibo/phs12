@@ -175,8 +175,9 @@ function back() {
                             v-model="form.pandita_id"
                             :panditas="panditas"
                             :errors="errors"
-                            class="mt-1 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200"
+                            class="mt-1 block w-full rounded-md border border-gray-300 p-2 text-sm shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 dark:focus:border-blue-400 dark:focus:ring-blue-400"
                         />
+                            <!-- class="mt-1 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200" -->
                     </div>
                 </div>
                 <!-- Form Input Lainnya -->
