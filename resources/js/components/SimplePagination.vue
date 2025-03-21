@@ -70,8 +70,7 @@ watch(pageInput, goToPage);
                 :max="totalPages"
                 class="w-12 lg:w-16 rounded border px-3 py-1 lg:px-4 lg:py-1 text-center shadow focus:border-blue-500 focus:ring focus:ring-blue-200 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 dark:focus:border-blue-400 dark:focus:ring-blue-400"
             />
-            <!-- <span class="text-gray-600 dark:text-gray-300">/ {{ totalPages }} </span> -->
-            <span class="text-gray-600 dark:text-gray-300">/ 11000</span>
+            <span class="text-gray-600 dark:text-gray-300">/ {{ totalPages }} </span>
         </div>
 
         <!-- Tombol Next -->
@@ -90,7 +89,7 @@ watch(pageInput, goToPage);
         <!-- Tombol Last -->
         <template v-if="links[links.length - 1]?.url !== null">
             <Link preserve-scroll
-                :href="links[links.length - 1].url"
+                :href="links[ totalPages ].url"
                 class="rounded border px-3 py-1 text-xs lg:px-4 lg:py-2 lg:text-sm text-gray-600 shadow-sm transition hover:bg-gray-100 active:scale-95 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700"
             >
                <ChevronDoubleRightIcon  class="h-4 w-4" />
