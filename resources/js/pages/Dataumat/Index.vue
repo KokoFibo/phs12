@@ -373,7 +373,7 @@ function navigateToEdit(id) {
         <!-- Pagination -->
 <!-- ok1 -->
         <!-- <div class="mt-4 flex mx-auto items-center gap-5"> -->
-        <div class=" lg:mt-3 flex items-center justify-center gap-2 dark:bg-gray-900 dark:text-gray-200">
+        <div class=" mt-3 flex items-center justify-center gap-2 dark:bg-gray-900 dark:text-gray-200">
              
             <button  class="rounded border px-3 py-1 text-xs lg:px-4 lg:py-2 lg:text-sm text-gray-600 shadow-sm transition hover:bg-gray-100 active:scale-95 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700" @click="goToPage(pagination.first_page)">               <ChevronDoubleLeftIcon class="h-4 w-4" />
 </button>
