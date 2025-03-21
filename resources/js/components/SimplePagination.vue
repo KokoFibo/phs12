@@ -35,7 +35,7 @@ watch(pageInput, goToPage);
 </script>
 
 <template>
-    <div v-if="links?.length > 0" class="flex items-center justify-center gap-2 dark:bg-gray-900 dark:text-gray-200">
+    <div v-if="links?.length > 0" class="flex items-center justify-center mt-3 gap-2 dark:bg-gray-900 dark:text-gray-200">
         <!-- Tombol First -->
         <template v-if="links[0]?.url !== null">
             <Link preserve-scroll
