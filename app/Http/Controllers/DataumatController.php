@@ -128,6 +128,7 @@ class DataumatController extends Controller
                 // 'umur' => $umat->tgl_lahir ? Carbon::now()->year - Carbon::parse($umat->tgl_lahir)->year : null,
                 'gender' => $umat->gender,
                 'status' => $umat->status,
+                'created_at' => $umat->created_at,
 
                 'chienkhun' => function () use ($umat) {
                     $umur = $umat->tgl_lahir ? Carbon::now()->year - Carbon::parse($umat->tgl_lahir)->year : null;
