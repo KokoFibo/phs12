@@ -9,6 +9,7 @@ use App\Models\Group;
 use App\Models\Vihara;
 use App\Models\Pandita;
 use App\Models\Dataumat;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 
@@ -73,6 +74,10 @@ class DataumatController extends Controller
         ];
     }
 
+    public function getNamaById($id)
+    {
+        return optional(User::find($id))->name;
+    }
 
     public function index(Request $request)
     {
@@ -129,6 +134,10 @@ class DataumatController extends Controller
                 'gender' => $umat->gender,
                 'status' => $umat->status,
                 'created_at' => $umat->created_at,
+                // 'created_by_name' => $this->getNamaById($umat->created_by),
+                'created_by_name' => function () use ($umat) {
+                    return optional(User::find($umat->created_by))->name;
+                },
 
                 'chienkhun' => function () use ($umat) {
                     $umur = $umat->tgl_lahir ? Carbon::now()->year - Carbon::parse($umat->tgl_lahir)->year : null;
@@ -288,6 +297,7 @@ class DataumatController extends Controller
         $data->tgl_vtotal = $request->tgl_vtotal;
         $data->status = $request->status;
         $data->keterangan = $request->keterangan;
+        $data->created_by = auth()->user()->id;
         $data->save();
         // return redirect()->route('dataumats.index')->with('success', 'Data Umat berhasil ditambahkan.');
         return redirect()->route('dataumats.index')->with('toast', [
