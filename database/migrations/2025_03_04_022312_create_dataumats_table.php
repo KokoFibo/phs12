@@ -36,6 +36,7 @@ return new class extends Migration
             $table->date('tgl_vtotal')->nullable();
             $table->string('status')->nullable();
             $table->text('keterangan')->nullable(); // Ubah menjadi TEXT
+            $table->integer('created_by')->nullable(); // Ubah menjadi TEXT
             $table->timestamps();
         });
     }

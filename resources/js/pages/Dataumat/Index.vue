@@ -419,11 +419,18 @@ const formatDateTime = (dateString) => {
                         >
                             Pandita
                         </th>
+
                         <th v-if="userStore.user_role===3"
                             @click="handleSort('created_at')"
                             class="cursor-pointer px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300"
                         >
                             Created at
+                        </th>
+                        <th v-if="userStore.user_role===3"
+                            @click="handleSort('created_by')"
+                            class="cursor-pointer px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300"
+                        >
+                            Created by
                         </th>
                     </tr>
                 </thead>
@@ -475,6 +482,9 @@ const formatDateTime = (dateString) => {
                         </td>
                         <td v-if="userStore.user_role===3" class="whitespace-normal px-4 py-2 text-sm text-gray-500 dark:text-gray-300">
                             {{ formatDateTime(dataumat.created_at) }}
+                        </td>
+                        <td v-if="userStore.user_role===3" class="whitespace-normal px-4 py-2 text-sm text-gray-500 dark:text-gray-300">
+                            {{ dataumat.created_by_name }}
                         </td>
 
                         
