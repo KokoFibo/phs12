@@ -27,7 +27,7 @@ const userStore = useAuthStore();
 
 console.log(userStore.user_role);
 const confirmDelete = (id) => {
-    if (window.confirm('Apakah yakin ingin menghapus data ini?')) {
+    if (window.confirm('Apakah yakin ingin menghapus data ini??')) {
         router.delete(`/dataumats/${id}`, {
             onSuccess: () => {
                 toast.success('Data Umat berhasil dihapus.');
