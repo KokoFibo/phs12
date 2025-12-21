@@ -39,6 +39,7 @@
         "lunar-javascript": "^1.7.1",
         "pinia": "^3.0.1",
         "pinia-plugin-persistedstate": "^4.2.0",
+        "puppeteer": "^24.31.0",
         "radix-vue": "^1.9.11",
         "reka-ui": "^2.0.2",
         "tailwind-merge": "^2.6.0",

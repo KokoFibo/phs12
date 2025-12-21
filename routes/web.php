@@ -1,18 +1,19 @@
 <?php
 
-use App\Http\Controllers\DashboardController;
 use Inertia\Inertia;
+use App\Models\Dataumat;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\KotaController;
+use App\Http\Controllers\TestController;
+use App\Http\Controllers\EmailController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\ViharaController;
 use App\Http\Controllers\PanditaController;
 use App\Http\Controllers\DataumatController;
-use App\Models\Dataumat;
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\EditRoleController;
 use App\Http\Controllers\NewcomerController;
-use App\Http\Controllers\TestController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->middleware('auth')
@@ -55,7 +56,15 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/viharas-by-group/{group}', [DataumatController::class, 'getViharasByGroup'])->name('viharas.by.group');
         Route::get('/groups-by-kota-edit/{kota_id}', [DataumatController::class, 'getGroupsByKotaEdit'])->name('groups.by.kota.edit');
         Route::get('/viharas-by-group-edit/{group}', [DataumatController::class, 'getViharasByGroupEdit'])->name('viharas.by.group.edit');
+        Route::get('/cek', [DataumatController::class, 'cek']);
+        Route::get('/dataumat/export-excel', [DataumatController::class, 'exportExcel'])
+            ->name('dataumat.export.excel');
 
+        // routes/web.php
+        Route::get('/dataumat/pdf-view', [DataumatController::class, 'pdfView'])->name('dataumats.pdf-view');
+        Route::get('/dataumat/export-pdf', [DataumatController::class, 'exportPdf'])->name('dataumats.export-pdf');
+
+        Route::get('/send-email', [EmailController::class, 'sendEmail']);
 
         Route::middleware(['SuperAdmin'])->group(function () {
 

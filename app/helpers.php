@@ -4,7 +4,34 @@ use Carbon\Carbon;
 use App\Models\Kota;
 use App\Models\Group;
 use App\Models\Vihara;
+use Mockery\LegacyMockInterface;
 use Overtrue\ChineseCalendar\Calendar;
+
+function namaGender($kode, $tgl_lahir)
+{
+    // Hitung usia dari tanggal lahir
+    $usia = \Carbon\Carbon::parse($tgl_lahir)->age;
+
+    // Jika usia di bawah 16 tahun
+    if ($usia <= 16) {
+        if ($kode == 1) {
+            return '童';
+        } elseif ($kode == 2) {
+            return '女';
+        }
+    }
+
+    // Jika usia 16 tahun ke atas
+    if ($kode == 1) {
+        return '乾';
+    } elseif ($kode == 2) {
+        return '坤';
+    }
+
+    // Jika kode tidak valid
+    return null;
+}
+
 
 function lunarInChinese($date)
 {
