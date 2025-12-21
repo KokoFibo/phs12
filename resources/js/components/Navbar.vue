@@ -1,14 +1,13 @@
 <script setup>
-import { ref, onMounted } from 'vue';
-import { Link, router } from '@inertiajs/vue3';
-import { MoonIcon, SunIcon, ChevronDownIcon, Bars3Icon, XMarkIcon } from '@heroicons/vue/24/solid';
 import { useAuthStore } from '@/Stores/authStore';
-import { computed } from 'vue';
+import { Bars3Icon, ChevronDownIcon, MoonIcon, SunIcon, XMarkIcon } from '@heroicons/vue/24/solid';
+import { Link, router } from '@inertiajs/vue3';
+import { LogOut } from 'lucide-vue-next';
+import { computed, onMounted, ref } from 'vue';
 const isDarkMode = ref(localStorage.getItem('theme') === 'dark');
 const isMenuOpen = ref(false);
 const isDataPenunjangOpen = ref(false);
 const isSettingOpen = ref(false);
-
 
 // Toggle Dark Mode
 const toggleDarkMode = () => {
@@ -50,7 +49,7 @@ const greeting = computed(() => {
 
 <template>
     <nav class="sticky top-0 z-40 w-full bg-white shadow-md dark:bg-gray-900">
-        <div class="mx-auto flex  items-center justify-between px-4 py-3">
+        <div class="mx-auto flex items-center justify-between px-4 py-3">
             <!-- Logo -->
             <div class="flex items-center space-x-3">
                 <img src="/images/logo.png" alt="Logo" class="h-8" />
@@ -58,73 +57,69 @@ const greeting = computed(() => {
             </div>
 
             <!-- Desktop Menu -->
-            <div class="hidden lg:flex space-x-6">
+            <div class="hidden space-x-6 lg:flex">
                 <Link :href="route('dashboard')" class="nav-link">Dashboard</Link>
                 <Link :href="route('dataumats.index')" class="nav-link">Data Umat</Link>
 
                 <!-- Dropdown Data Penunjang -->
-                <div v-if="userStore.user_role >= 2" class="relative dropdown-menu">
+                <div v-if="userStore.user_role >= 2" class="dropdown-menu relative">
                     <button @click.stop="isDataPenunjangOpen = !isDataPenunjangOpen" class="nav-link flex items-center">
-                        Data Penunjang <ChevronDownIcon class="h-4 w-4 ml-1" />
+                        Data Penunjang <ChevronDownIcon class="ml-1 h-4 w-4" />
                     </button>
-                    <div
-                        v-if="isDataPenunjangOpen"
-                        class="absolute left-0 mt-2 w-48 bg-white shadow-md rounded-md py-2 dark:bg-gray-800"
-                    >
+                    <div v-if="isDataPenunjangOpen" class="absolute left-0 mt-2 w-48 rounded-md bg-white py-2 shadow-md dark:bg-gray-800">
                         <Link :href="route('kotas.index')" class="dropdown-item">Data Kota</Link>
                         <Link :href="route('groups.index')" class="dropdown-item">Data Group</Link>
                         <Link :href="route('viharas.index')" class="dropdown-item">Data Vihara</Link>
                         <Link :href="route('panditas.index')" class="dropdown-item">Data Pandita</Link>
                         <Link :href="route('editroles.index')" class="dropdown-item">Edit User Role</Link>
-
                     </div>
                 </div>
 
                 <!-- Dropdown Setting -->
-                <div class="relative dropdown-menu">
+                <div class="dropdown-menu relative">
                     <button @click.stop="isSettingOpen = !isSettingOpen" class="nav-link flex items-center">
-                        Setting <ChevronDownIcon class="h-4 w-4 ml-1" />
+                        Setting <ChevronDownIcon class="ml-1 h-4 w-4" />
                     </button>
-                    <div
-                        v-if="isSettingOpen"
-                        class="absolute left-0 mt-2 w-36 bg-white shadow-md rounded-md py-2 dark:bg-gray-800"
-                    >
+                    <div v-if="isSettingOpen" class="absolute left-0 mt-2 w-36 rounded-md bg-white py-2 shadow-md dark:bg-gray-800">
                         <Link :href="route('profile.edit')" class="dropdown-item">Setting</Link>
                         <button @click="logout" class="dropdown-item w-full text-left">Log Out</button>
                     </div>
                 </div>
             </div>
 
-           <div class='flex gap-5'>
-            <div class="hidden lg:block">
-                <p>{{ greeting }},  {{ userStore.user_name }}</p>
+            <div class="flex gap-5">
+                <div class="hidden lg:block">
+                    <p>{{ greeting }}, {{ userStore.user_name }}</p>
+                </div>
+                <!-- Dark Mode Toggle & Mobile Menu Button -->
+                <div class="flex items-center space-x-4">
+                    <button @click="toggleDarkMode" class="text-gray-700 dark:text-white">
+                        <SunIcon v-if="isDarkMode" class="h-6 w-6" />
+                        <MoonIcon v-else class="h-6 w-6" />
+                    </button>
+                    <button @click="isMenuOpen = !isMenuOpen" class="text-gray-700 dark:text-white lg:hidden">
+                        <Bars3Icon v-if="!isMenuOpen" class="h-6 w-6" />
+                        <XMarkIcon v-else class="h-6 w-6" />
+                    </button>
+                </div>
+                <div>
+                    <button @click="logout"><LogOut class="h-6 w-6" /></button>
+                </div>
             </div>
-             <!-- Dark Mode Toggle & Mobile Menu Button -->
-            <div class="flex items-center space-x-4">
-                <button @click="toggleDarkMode" class="text-gray-700 dark:text-white">
-                    <SunIcon v-if="isDarkMode" class="h-6 w-6" />
-                    <MoonIcon v-else class="h-6 w-6" />
-                </button>
-                <button @click="isMenuOpen = !isMenuOpen" class="lg:hidden text-gray-700 dark:text-white">
-                    <Bars3Icon v-if="!isMenuOpen" class="h-6 w-6" />
-                    <XMarkIcon v-else class="h-6 w-6" />
-                </button>
-            </div>
-           </div>
         </div>
 
         <!-- Mobile Menu -->
-        <div v-if="isMenuOpen" class="lg:hidden bg-white dark:bg-gray-800 shadow-md">
-            <div class="px-4 py-2 space-y-2">
-                <Link :href="route('dashboard')" class="block nav-link">Dashboard</Link>
-                <Link :href="route('dataumats.index')" class="block nav-link">Data Umat</Link>
+        <div v-if="isMenuOpen" class="bg-white shadow-md dark:bg-gray-800 lg:hidden">
+            <div class="space-y-2 px-4 py-2">
+                <Link :href="route('dashboard')" class="nav-link block">Dashboard</Link>
+                <Link :href="route('dataumats.index')" class="nav-link block">Data Umat</Link>
 
                 <!-- Dropdown Data Penunjang -->
-                <div v-if="userStore.user_role >= 2"  class="dropdown-menu">
-                    <button @click="isDataPenunjangOpen = !isDataPenunjangOpen" class="nav-link flex justify-between w-full">
+                <div v-if="userStore.user_role >= 2" class="dropdown-menu">
+                    <button @click="isDataPenunjangOpen = !isDataPenunjangOpen" class="nav-link flex w-full justify-between">
                         Data Penunjang <ChevronDownIcon class="h-4 w-4" />
                     </button>
-                    <div v-if="isDataPenunjangOpen" class="pl-4 space-y-2">
+                    <div v-if="isDataPenunjangOpen" class="space-y-2 pl-4">
                         <Link :href="route('kotas.index')" class="dropdown-item">Data Kota</Link>
                         <Link :href="route('groups.index')" class="dropdown-item">Data Group</Link>
                         <Link :href="route('viharas.index')" class="dropdown-item">Data Vihara</Link>
@@ -135,10 +130,10 @@ const greeting = computed(() => {
 
                 <!-- Dropdown Setting -->
                 <div class="dropdown-menu">
-                    <button @click="isSettingOpen = !isSettingOpen" class="nav-link flex justify-between w-full">
+                    <button @click="isSettingOpen = !isSettingOpen" class="nav-link flex w-full justify-between">
                         Setting <ChevronDownIcon class="h-4 w-4" />
                     </button>
-                    <div v-if="isSettingOpen" class="pl-4 space-y-2">
+                    <div v-if="isSettingOpen" class="space-y-2 pl-4">
                         <Link :href="route('profile.edit')" class="dropdown-item">Setting</Link>
                         <button @click="logout" class="dropdown-item w-full text-left">Log Out</button>
                     </div>
@@ -150,7 +145,7 @@ const greeting = computed(() => {
 
 <style scoped>
 .nav-link {
-    @apply text-gray-700 hover:text-blue-500 dark:text-white dark:hover:text-blue-400 transition py-2;
+    @apply py-2 text-gray-700 transition hover:text-blue-500 dark:text-white dark:hover:text-blue-400;
 }
 
 .dropdown-item {
