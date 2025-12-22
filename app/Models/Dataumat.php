@@ -62,4 +62,9 @@ class Dataumat extends Model
     {
         return $this->belongsTo(Pandita::class);
     }
+
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
 }

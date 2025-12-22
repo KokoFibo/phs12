@@ -11,20 +11,19 @@ function namaGender($kode, $tgl_lahir)
 {
     // Hitung usia dari tanggal lahir
     $usia = \Carbon\Carbon::parse($tgl_lahir)->age;
-
     // Jika usia di bawah 16 tahun
     if ($usia <= 16) {
-        if ($kode == 1) {
+        if ($kode == 'Laki-laki') {
             return '童';
-        } elseif ($kode == 2) {
+        } elseif ($kode == 'Perempuan') {
             return '女';
         }
     }
 
     // Jika usia 16 tahun ke atas
-    if ($kode == 1) {
+    if ($kode == 'Laki-laki') {
         return '乾';
-    } elseif ($kode == 2) {
+    } elseif ($kode == 'Perempuan') {
         return '坤';
     }
 
@@ -65,6 +64,7 @@ function lunarInChinese($date)
         return '';
     }
 }
+
 
 function getNamaKota($id)
 {

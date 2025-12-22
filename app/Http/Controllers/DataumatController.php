@@ -453,229 +453,201 @@ class DataumatController extends Controller
 
     public function index(Request $request)
     {
-        // Ambil parameter request
-        $search      = $request->input('search');
-        $sortBy      = $request->input('sort_by', 'id');
-        $sortOrder   = $request->input('sort_order', 'desc');
-        $perPage     = $request->input('per_page', 10);
+        // ==================================================
+        // REQUEST & DEFAULT
+        // ==================================================
+        $search     = $request->search;
+        $sortBy     = $request->input('sort_by', 'id');
+        $sortOrder  = $request->input('sort_order', 'desc');
+        $perPage    = $request->input('per_page', 10);
 
-        $usiaStart   = $request->input('filter_usia_start') !== null && $request->input('filter_usia_start') !== ''
-            ? (int)$request->filter_usia_start
-            : 0;
+        $usiaStart  = $request->filled('filter_usia_start') ? (int) $request->filter_usia_start : 0;
+        $usiaEnd    = $request->filled('filter_usia_end')   ? (int) $request->filter_usia_end   : 120;
 
-        $usiaEnd     = $request->input('filter_usia_end') !== null && $request->input('filter_usia_end') !== ''
-            ? (int)$request->filter_usia_end
-            : 120;
-
-        // Query dasar
-        $query = Dataumat::query();
-
-        // ===========================
-        // 🔍 FILTER PENCARIAN
-        // ===========================
-        $query->when($search, function ($q) use ($search) {
-            $q->where(function ($q) use ($search) {
-                $q->where('nama_umat', 'like', "%{$search}%")
-                    ->orWhere('nama_alias', 'like', "%{$search}%")
-                    ->orWhere('mandarin', 'like', "%{$search}%");
-            });
-        });
-
-
-        // ===========================
-        // 🔥 FILTER USIA
-        // ===========================
-        $query->whereRaw("
-        TIMESTAMPDIFF(YEAR, tgl_lahir, CURDATE()) BETWEEN ? AND ?
-    ", [$usiaStart, $usiaEnd]);
-
-
-        // ===========================
-        // 🥬 FILTER VEGETARIAN (tgl_vtotal)
-        // 0 = semua
-        // 1 = vegetarian (ada tanggal)
-        // 2 = belum vegetarian (null)
-        // ===========================
-        if ($request->filter_vegetarian == 1) {
-            $query->whereNotNull('tgl_vtotal');
-        } elseif ($request->filter_vegetarian == 2) {
-            $query->whereNull('tgl_vtotal');
+        // ==================================================
+        // SORT WHITELIST
+        // ==================================================
+        $allowedSort = ['id', 'nama_umat', 'created_at'];
+        if (!in_array($sortBy, $allowedSort)) {
+            $sortBy = 'id';
         }
 
+        // ==================================================
+        // FILTER USIA (OPTIMIZED)
+        // ==================================================
+        $tglLahirStart = now()->subYears($usiaEnd)->startOfDay();
+        $tglLahirEnd   = now()->subYears($usiaStart)->endOfDay();
 
-        // ===========================
-        // 📘 FILTER SIDANG DHARMA (tgl_sd3h)
-        // 0 = semua
-        // 1 = sudah sidang
-        // 2 = belum sidang
-        // ===========================
-        if ($request->filter_sidang_dharma == 1) {
-            $query->whereNotNull('tgl_sd3h');
-        } elseif ($request->filter_sidang_dharma == 2) {
-            $query->whereNull('tgl_sd3h');
-        }
+        // ==================================================
+        // MAIN QUERY (TABLE DATA)
+        // ==================================================
+        $query = Dataumat::query()
+            ->with([
+                'createdBy:id,name',
+                'kota:id,nama_kota',
+                'group:id,nama_group',
+                'vihara:id,nama_vihara',
+                'pandita:id,nama_pandita',
+            ])
 
+            // SEARCH
+            ->when($search, function ($q) use ($search) {
+                $q->where(function ($qq) use ($search) {
+                    $qq->where('nama_umat', 'like', "%{$search}%")
+                        ->orWhere('nama_alias', 'like', "%{$search}%")
+                        ->orWhere('mandarin', 'like', "%{$search}%");
+                });
+            })
 
-        // ===========================
-        // FILTER KOTA, GROUP, VIHARA
-        // ===========================
-        $query->when($request->filter_kota, fn($q) => $q->where('kota_id', $request->filter_kota));
-        $query->when($request->filter_group, fn($q) => $q->where('group_id', $request->filter_group));
-        $query->when($request->filter_vihara, fn($q) => $q->where('vihara_id', $request->filter_vihara));
-        $query->when($request->filter_pandita, fn($q) => $q->where('pandita_id', $request->filter_pandita));
-        $query->when($request->filter_tahun, fn($q) => $q->whereYear('tgl_mohonTao', $request->filter_tahun));
+            // FILTER USIA (HANYA TABLE)
+            ->whereBetween('tgl_lahir', [$tglLahirStart, $tglLahirEnd])
 
+            // STATUS
+            ->when($request->filter_vegetarian == 1, fn($q) => $q->whereNotNull('tgl_vtotal'))
+            ->when($request->filter_vegetarian == 2, fn($q) => $q->whereNull('tgl_vtotal'))
 
-        // ===========================
-        // SORTING
-        // ===========================
-        $query->orderBy($sortBy, $sortOrder);
+            ->when($request->filter_sidang_dharma == 1, fn($q) => $q->whereNotNull('tgl_sd3h'))
+            ->when($request->filter_sidang_dharma == 2, fn($q) => $q->whereNull('tgl_sd3h'))
 
-        // ===========================
-        // PAGINATION
-        // ===========================
+            // RELASI
+            ->when($request->filter_kota, fn($q) => $q->where('kota_id', $request->filter_kota))
+            ->when($request->filter_group, fn($q) => $q->where('group_id', $request->filter_group))
+            ->when($request->filter_vihara, fn($q) => $q->where('vihara_id', $request->filter_vihara))
+            ->when($request->filter_pandita, fn($q) => $q->where('pandita_id', $request->filter_pandita))
+            ->when($request->filter_tahun, fn($q) => $q->whereYear('tgl_mohonTao', $request->filter_tahun))
+
+            ->orderBy($sortBy, $sortOrder);
+
         $dataumats = $query->paginate($perPage)->withQueryString();
 
-
-        // ===========================
-        // REFERENSI DATA
-        // ===========================
-        $kotas = Kota::all()->keyBy('id');
-        $groups = Group::all()->keyBy('id');
-        $viharas = Vihara::all()->keyBy('id');
-        $panditas = Pandita::all()->keyBy('id');
-
-
-        // ===========================
-        // DROPDOWN KOTA
-        // ===========================
+        // ==================================================
+        // DROPDOWN — KOTA
+        // ==================================================
         $kotas_list = Kota::whereIn(
             'id',
             Dataumat::select('kota_id')->distinct()
         )->orderBy('nama_kota')->get();
 
+        // ==================================================
+        // DROPDOWN — GROUP (DEPEND KOTA)
+        // ==================================================
+        $groups_list = Group::whereIn(
+            'id',
+            Dataumat::when(
+                $request->filter_kota,
+                fn($q) =>
+                $q->where('kota_id', $request->filter_kota)
+            )->select('group_id')->distinct()
+        )->orderBy('nama_group')->get();
 
-        // ===========================
-        // DROPDOWN GROUP
-        // ===========================
-        $filteredGroupIds = Dataumat::when($request->filter_kota, function ($q) use ($request) {
-            $q->where('kota_id', $request->filter_kota);
-        })->select('group_id')->distinct()->pluck('group_id');
+        // ==================================================
+        // DROPDOWN — VIHARA (DEPEND KOTA + GROUP)
+        // ==================================================
+        $viharaQuery = Dataumat::query()
+            ->when(
+                $request->filter_kota,
+                fn($q) =>
+                $q->where('kota_id', $request->filter_kota)
+            )
+            ->when(
+                $request->filter_group,
+                fn($q) =>
+                $q->where('group_id', $request->filter_group)
+            )
+            ->select('vihara_id')
+            ->distinct();
 
-        if ($filteredGroupIds->isEmpty() && $request->filter_kota) {
-            $filteredGroupIds = Dataumat::select('group_id')->distinct()->pluck('group_id');
-        }
+        $viharas_list = Vihara::whereIn('id', $viharaQuery)
+            ->orderBy('nama_vihara')
+            ->get();
 
-        $groups_list = Group::whereIn('id', $filteredGroupIds)->orderBy('nama_group')->get();
+        // ==================================================
+        // DROPDOWN — PANDITA (OPTIONAL)
+        // ==================================================
+        $panditas_list = Pandita::whereIn(
+            'id',
+            Dataumat::when(
+                $request->filter_kota,
+                fn($q) =>
+                $q->where('kota_id', $request->filter_kota)
+            )
+                ->when(
+                    $request->filter_group,
+                    fn($q) =>
+                    $q->where('group_id', $request->filter_group)
+                )
+                ->when(
+                    $request->filter_vihara,
+                    fn($q) =>
+                    $q->where('vihara_id', $request->filter_vihara)
+                )
+                ->select('pandita_id')
+                ->distinct()
+        )->orderBy('nama_pandita')->get();
 
-
-        // ===========================
-        // DROPDOWN VIHARA
-        // ===========================
-        if ($request->filter_group && $request->filter_kota && $request->filter_vihara) {
-
-            $filteredViharaIds = Dataumat::where('group_id', $request->filter_group)
-                ->where('kota_id', $request->filter_kota)
-                ->where('vihara_id', $request->filter_vihara)
-                ->select('vihara_id')->distinct()->pluck('vihara_id');
-        } elseif ($request->filter_group) {
-
-            $filteredViharaIds = Dataumat::where('group_id', $request->filter_group)
-                ->select('vihara_id')->distinct()->pluck('vihara_id');
-        } elseif ($request->filter_kota) {
-
-            $filteredViharaIds = Dataumat::where('kota_id', $request->filter_kota)
-                ->select('vihara_id')->distinct()->pluck('vihara_id');
-        } else {
-
-            $filteredViharaIds = Dataumat::select('vihara_id')->distinct()->pluck('vihara_id');
-        }
-
-        $viharas_list = Vihara::whereIn('id', $filteredViharaIds)
-            ->orderBy('nama_vihara')->get();
-
-
-        // ===========================
-        // DROPDOWN PANDITA
-        // ===========================
-        $filteredPanditaIds = Dataumat::query()
-            ->when($request->filter_group, fn($q) => $q->where('group_id', $request->filter_group))
-            ->when($request->filter_kota, fn($q) => $q->where('kota_id', $request->filter_kota))
-            ->when($request->filter_vihara, fn($q) => $q->where('vihara_id', $request->filter_vihara))
-            ->select('pandita_id')->distinct()->pluck('pandita_id');
-
-        $panditas_list = Pandita::whereIn('id', $filteredPanditaIds)
-            ->orderBy('nama_pandita')->get();
-
-
-        // ===========================
-        // DROPDOWN TAHUN
-        // ===========================
-        // $tahuns_list = Dataumat::selectRaw('YEAR(tgl_mohonTao) as tahun')
-        //     ->whereNotNull('tgl_mohonTao')
-        //     ->distinct()
-        //     ->orderBy('tahun', 'desc')
-        //     ->pluck('tahun');
-
-        $tahunQuery = Dataumat::query()
-            ->when($request->filter_kota, fn($q) => $q->where('kota_id', $request->filter_kota))
-            ->when($request->filter_group, fn($q) => $q->where('group_id', $request->filter_group))
-            ->when($request->filter_vihara, fn($q) => $q->where('vihara_id', $request->filter_vihara))
-            // ->when($request->filter_pandita, fn($q) => $q->where('pandita_id', $request->filter_pandita))
+        // ==================================================
+        // DROPDOWN — TAHUN (PALING SERING SALAH)
+        // ❗ TIDAK PAKAI FILTER USIA
+        // ==================================================
+        $tahuns_list = Dataumat::query()
+            ->when(
+                $request->filter_kota,
+                fn($q) =>
+                $q->where('kota_id', $request->filter_kota)
+            )
+            ->when(
+                $request->filter_group,
+                fn($q) =>
+                $q->where('group_id', $request->filter_group)
+            )
+            ->when(
+                $request->filter_vihara,
+                fn($q) =>
+                $q->where('vihara_id', $request->filter_vihara)
+            )
             ->whereNotNull('tgl_mohonTao')
             ->selectRaw('YEAR(tgl_mohonTao) as tahun')
             ->distinct()
-            ->orderBy('tahun', 'desc');
+            ->orderByDesc('tahun')
+            ->pluck('tahun');
 
-        $tahuns_list = $tahunQuery->pluck('tahun');
-
-
-
-
-
-        // ===========================
-        // TRANSFORM DATA
-        // ===========================
-        $dataumats->getCollection()->transform(function ($umat) use ($kotas, $groups, $viharas, $panditas) {
+        // ==================================================
+        // TRANSFORM TABLE DATA
+        // ==================================================
+        $dataumats->getCollection()->transform(function ($u) {
             return [
-                'id' => $umat->id,
-                'nama_umat' => $umat->nama_umat,
-                'nama_alias' => $umat->nama_alias,
-                'mandarin' => $umat->mandarin,
-                'tgl_lahir' => $umat->tgl_lahir,
-                'umur' => $umat->tgl_lahir ? Carbon::parse($umat->tgl_lahir)->age : null,
-                'gender' => $umat->gender,
-                'status' => $umat->status,
-                'created_at' => $umat->created_at,
-                'created_by_name' => optional(User::find($umat->created_by))->name,
-                'chienkhun' => namaGender($umat->gender, $umat->tgl_lahir),
-                'kota_nama' => $kotas[$umat->kota_id]->nama_kota ?? 'Tidak Ada Kota',
-                'group_nama' => $groups[$umat->group_id]->nama_group ?? 'Tidak Ada Group',
-                'vihara_id' => $umat->vihara_id,
-                'vihara_nama' => $viharas[$umat->vihara_id]->nama_vihara ?? 'Tidak Ada Vihara',
-                'pandita_id' => $umat->pandita_id,
-                'pandita_nama' => $panditas[$umat->pandita_id]->nama_pandita ?? 'Tidak Ada Pandita',
+                'id' => $u->id,
+                'nama_umat' => $u->nama_umat,
+                'nama_alias' => $u->nama_alias,
+                'mandarin'  => $u->mandarin,
+                'tgl_lahir' => $u->tgl_lahir,
+                'umur'      => $u->tgl_lahir ? Carbon::parse($u->tgl_lahir)->age : null,
+                'gender'    => $u->gender,
+                'status'    => $u->status,
+                'created_at' => $u->created_at,
+                'created_by_name' => $u->createdBy->name ?? null,
+                'chienkhun' => namaGender($u->gender, $u->tgl_lahir),
+
+                'kota_nama'   => $u->kota->nama_kota ?? '-',
+                'group_nama'  => $u->group->nama_group ?? '-',
+                'vihara_id'   => $u->vihara_id,
+                'vihara_nama' => $u->vihara->nama_vihara ?? '-',
+                'pandita_id'  => $u->pandita_id,
+                'pandita_nama' => $u->pandita->nama_pandita ?? '-',
             ];
         });
 
-
-        // ===========================
-        // RETURN KE INERTIA
-        // ===========================
-        // $testdata = collect($dataumats->items())->first();
-        // dd($sortBy, $sortOrder, $testdata);
+        // ==================================================
+        // RETURN
+        // ==================================================
         return Inertia::render('Dataumat/Index', [
             'dataumats' => $dataumats->items(),
-            'kotas' => $kotas->values(),
-            'groups' => $groups->values(),
-            'viharas' => $viharas->values(),
-            'panditas' => $panditas->values(),
 
-            'kotas_list' => $kotas_list,
-            'groups_list' => $groups_list,
+            'kotas_list'   => $kotas_list,
+            'groups_list'  => $groups_list,
             'viharas_list' => $viharas_list,
             'panditas_list' => $panditas_list,
-            'tahuns_list' => $tahuns_list,
+            'tahuns_list'  => $tahuns_list,
 
             'filters' => [
                 'search' => $search,
@@ -687,6 +659,7 @@ class DataumatController extends Controller
                 'filter_usia_end' => $usiaEnd,
                 'filter_vegetarian' => $request->filter_vegetarian,
                 'filter_sidang_dharma' => $request->filter_sidang_dharma,
+                'filter_tahun' => $request->filter_tahun,
                 'sort_by' => $sortBy,
                 'sort_order' => $sortOrder,
             ],
@@ -699,6 +672,9 @@ class DataumatController extends Controller
             ],
         ]);
     }
+
+
+
 
 
 
