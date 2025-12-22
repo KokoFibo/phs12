@@ -475,8 +475,12 @@ class DataumatController extends Controller
         // ==================================================
         // FILTER USIA (OPTIMIZED)
         // ==================================================
-        $tglLahirStart = now()->subYears($usiaEnd)->startOfDay();
+        $tglLahirStart = now()->subYears($usiaEnd + 1)->startOfDay();
         $tglLahirEnd   = now()->subYears($usiaStart)->endOfDay();
+
+        // $tglLahirStart = now()->subYears($usiaEnd)->toDateString();
+        // $tglLahirEnd   = now()->subYears($usiaStart)->toDateString();
+
 
         // ==================================================
         // MAIN QUERY (TABLE DATA)
