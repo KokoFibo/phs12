@@ -11,13 +11,15 @@ const logout = () => {
         <link rel="preconnect" href="https://rsms.me/" />
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
     </Head>
-    <div class="flex min-h-screen flex-col items-center bg-[#FDFDFC] p-6 text-[#1b1b18] dark:bg-[#0a0a0a] lg:justify-center lg:p-8">
+    <div
+        class="flex min-h-screen flex-col items-center bg-gradient-to-b from-blue-200 to-white p-6 text-[#1b1b18] dark:bg-[#0a0a0a] lg:justify-center lg:p-8"
+    >
         <header class="not-has-[nav]:hidden mb-6 w-full max-w-[335px] text-sm lg:max-w-4xl">
             <nav class="flex items-center justify-end gap-4">
                 <Link
                     v-if="$page.props.auth.user"
                     :href="route('dashboard')"
-                    class="inline-block rounded-sm border border-[#19140035] px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#1915014a] dark:border-[#3E3E3A] dark:text-[#EDEDEC] dark:hover:border-[#62605b]"
+                    class="inline-flex items-center justify-center rounded-md border border-blue-600 bg-blue-600 px-5 py-2 text-sm font-medium text-white shadow-sm transition-all hover:border-blue-700 hover:bg-blue-700 dark:border-blue-500 dark:bg-blue-500 dark:hover:bg-blue-600"
                 >
                     Dashboard
                 </Link>
@@ -25,7 +27,7 @@ const logout = () => {
                 <template v-else>
                     <Link
                         :href="route('login')"
-                        class="inline-block rounded-sm border border-transparent px-5 py-1.5 text-sm leading-normal text-[#1b1b18] hover:border-[#19140035] dark:text-[#EDEDEC] dark:hover:border-[#3E3E3A]"
+                        class="inline-flex items-center justify-center rounded-md border border-blue-600 bg-blue-600 px-5 py-2 text-sm font-medium text-white shadow-sm transition-all hover:border-blue-700 hover:bg-blue-700 dark:border-blue-500 dark:bg-blue-500 dark:hover:bg-blue-600"
                     >
                         Log in
                     </Link>
@@ -34,10 +36,22 @@ const logout = () => {
         </header>
         <div class="duration-750 starting:opacity-0 flex w-full items-center justify-center opacity-100 transition-opacity lg:grow">
             <main class="flex flex-col items-center p-8 text-center">
-                <h2 class="flex items-center gap-2 text-center text-3xl font-bold">👋 Welcome!</h2>
-                <p class="mt-2 text-gray-600 dark:text-gray-300">Sistem manajemen vihara Pelita Hati.</p>
+                <div class="flex flex-col items-center gap-6 lg:flex-row">
+                    <div class="max-w-md text-center lg:text-left">
+                        <h1 class="text-4xl font-bold md:text-5xl">Team Management</h1>
+                        <h1 class="text-4xl font-bold md:text-5xl">Vihara Pelita Hati</h1>
+                        <p class="mt-4 text-balance text-lg text-gray-700 md:text-lg">
+                            Semangat! Bersama kita bisa, jadikan hari ini lebih baik, teruslah menginspirasi, dedikasi kalian luar biasa, setiap usaha
+                            berarti.
+                        </p>
+                    </div>
+                    <div>
+                        <img src="images/flowers.png" alt="Bunga" class="h-80 w-80 rounded-2xl md:h-96 md:w-96" />
+                    </div>
+                </div>
             </main>
         </div>
+
         <div class="h-14.5 hidden lg:block"></div>
     </div>
 </template>
