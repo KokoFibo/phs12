@@ -693,6 +693,7 @@ const formatDateTime = (dateString) => {
                         <td class="whitespace-normal px-4 py-2 text-sm text-gray-500 dark:text-gray-300">{{ dataumat.mandarin }}</td>
                         <td class="whitespace-normal px-4 py-2 text-sm text-gray-500 dark:text-gray-300">{{ dataumat.umur }}</td>
                         <td class="whitespace-normal px-4 py-2 text-sm" :class="getGenderClass(dataumat.chienkhun)">
+                            <!-- {{ dataumat.gender }} -->
                             {{ dataumat.chienkhun }}
                         </td>
                         <td class="whitespace-normal px-4 py-2 text-sm text-gray-500 dark:text-gray-300">{{ dataumat.status }}</td>
