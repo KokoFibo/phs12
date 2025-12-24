@@ -18,7 +18,9 @@
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
 
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-JFPN8XCJ1J"></script>
+    {{-- VITE_GA_ID=G-JFPN8XCJ1J --}}
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id={{ env('VITE_GA_ID') }}"></script>
     <script>
         window.dataLayer = window.dataLayer || [];
 
@@ -26,8 +28,9 @@
             dataLayer.push(arguments);
         }
         gtag('js', new Date());
-
-        gtag('config', 'G-JFPN8XCJ1J');
+        gtag('config', '{{ env('VITE_GA_ID') }}', {
+            anonymize_ip: true
+        });
     </script>
 
     @routes
