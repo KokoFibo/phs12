@@ -626,6 +626,7 @@ class DataumatController extends Controller
                 'mandarin'  => $u->mandarin,
                 'tgl_lahir' => $u->tgl_lahir,
                 'umur'      => $u->tgl_lahir ? Carbon::parse($u->tgl_lahir)->age : null,
+                'tgl_mohonTao' => $u->tgl_mohonTao,
                 'gender'    => $u->gender,
                 'status'    => $u->status,
                 'created_at' => $u->created_at,
