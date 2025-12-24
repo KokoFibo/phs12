@@ -131,8 +131,11 @@
     <!-- Data Rows -->
     @foreach ($data as $index => $umat)
         <tr>
-            <td style="font-family: 'Segoe UI Light'; padding: 8px; border: 1px solid #ddd;">{{ $index + 1 }}</td>
-            <td style="font-family: 'Segoe UI Light'; padding: 8px; border: 1px solid #ddd;">{{ $umat['nama_umat'] }}
+            <td style="font-family: 'Segoe UI Light'; padding: 8px; border: 1px solid #ddd;">{{ $index + 1 }}
+            </td>
+            <td
+                style="{{ $umat['status'] === 'Inactive' ? 'background-color:#e2e8f0;' : '' }} font-family: 'Segoe UI Light'; padding: 8px; border: 1px solid #ddd;">
+                {{ $umat['nama_umat'] }}
             </td>
             <td style="font-family: 'Segoe UI Light'; padding: 8px; border: 1px solid #ddd;">
                 {{ $umat['nama_alias'] ?: '-' }}</td>
@@ -166,9 +169,11 @@
                 {{ $umat['tgl_sd3h'] ? 'Sudah' : 'Belum' }}</td>
             <td style="font-family: 'Segoe UI Light'; padding: 8px; border: 1px solid #ddd;">
                 {{ $umat['alamat'] ?: '-' }}</td>
-            <td style="font-family: 'Segoe UI Light'; padding: 8px; border: 1px solid #ddd;">{{ $umat['telp'] ?: '-' }}
+            <td style="font-family: 'Segoe UI Light'; padding: 8px; border: 1px solid #ddd;">
+                {{ $umat['telp'] ?: '-' }}
             </td>
-            <td style="font-family: 'Segoe UI Light'; padding: 8px; border: 1px solid #ddd;">{{ $umat['hp'] ?: '-' }}
+            <td style="font-family: 'Segoe UI Light'; padding: 8px; border: 1px solid #ddd;">
+                {{ $umat['hp'] ?: '-' }}
             </td>
             <td style="font-family: 'Segoe UI Light'; padding: 8px; border: 1px solid #ddd;">
                 {{ $umat['email'] ?: '-' }}</td>

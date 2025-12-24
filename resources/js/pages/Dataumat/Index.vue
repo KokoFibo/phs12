@@ -610,16 +610,22 @@ const formatDateTime = (dateString) => {
                             Umur
                         </th>
                         <th
+                            @click="handleSort('tgl_lahir')"
+                            class="cursor-pointer px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300"
+                        >
+                            Tanggal Lahir
+                        </th>
+                        <th
                             @click="handleSort('jenis_kelamin')"
                             class="cursor-pointer px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300"
                         >
                             Gender
                         </th>
                         <th
-                            @click="handleSort('status')"
+                            @click="handleSort('tgl_mohonTao')"
                             class="cursor-pointer px-4 py-2 text-left text-xs font-medium uppercase tracking-wider text-gray-500 dark:text-gray-300"
                         >
-                            Status
+                            Tgl Mohon Tao
                         </th>
                         <th
                             @click="handleSort('kota.nama_kota')"
@@ -663,7 +669,7 @@ const formatDateTime = (dateString) => {
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-900">
-                    <tr v-for="dataumat in dataumats" :key="dataumat.id">
+                    <tr v-for="dataumat in dataumats" :key="dataumat.id" :class="dataumat.status === 'Inactive' ? 'bg-slate-200' : ''">
                         <td class="whitespace-normal px-4 py-2 text-sm text-gray-500 dark:text-gray-300">
                             <div class="flex space-x-2">
                                 <button
@@ -692,11 +698,15 @@ const formatDateTime = (dateString) => {
                         <td class="whitespace-normal px-4 py-2 text-sm text-gray-500 dark:text-gray-300">{{ dataumat.nama_alias }}</td>
                         <td class="whitespace-normal px-4 py-2 text-sm text-gray-500 dark:text-gray-300">{{ dataumat.mandarin }}</td>
                         <td class="whitespace-normal px-4 py-2 text-sm text-gray-500 dark:text-gray-300">{{ dataumat.umur }}</td>
+                        <td class="whitespace-normal px-4 py-2 text-sm text-gray-500 dark:text-gray-300">{{ formatTanggal(dataumat.tgl_lahir) }}</td>
+
                         <td class="whitespace-normal px-4 py-2 text-sm" :class="getGenderClass(dataumat.chienkhun)">
                             <!-- {{ dataumat.gender }} -->
                             {{ dataumat.chienkhun }}
                         </td>
-                        <td class="whitespace-normal px-4 py-2 text-sm text-gray-500 dark:text-gray-300">{{ dataumat.status }}</td>
+                        <td class="whitespace-normal px-4 py-2 text-sm text-gray-500 dark:text-gray-300">
+                            {{ formatTanggal(dataumat.tgl_mohonTao) }}
+                        </td>
                         <td class="whitespace-normal px-4 py-2 text-sm text-gray-500 dark:text-gray-300">
                             {{ dataumat.kota_nama }}
                         </td>
