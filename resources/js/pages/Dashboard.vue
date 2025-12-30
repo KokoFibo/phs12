@@ -1,11 +1,10 @@
 <script setup>
 import CardInfo from '@/components/CardInfo.vue';
 // import AppLayout from '@/layouts/AppLayout.vue';
+import Navbar from '@/components/Navbar.vue';
 import { useAuthStore } from '@/Stores/authStore';
 import { Head } from '@inertiajs/vue3';
 import { useToast } from 'vue-toastification';
-import Navbar from '@/components/Navbar.vue';
-
 
 const toast = useToast();
 
@@ -14,10 +13,14 @@ const showToast = () => {
 };
 
 const userStore = useAuthStore();
+let thisYear = new Date().getFullYear();
+let lastYear = thisYear - 1;
 
 const props = defineProps({
     totalUmat: Number,
     umatBulanIni: Number,
+    umatTahunIni: Number,
+    umatTahunLalu: Number,
     auth: Object, // Pastikan Laravel mengirimkan `auth`
     // kota: String,
 });
@@ -49,14 +52,16 @@ console.log('user role : ', props.auth.user.role);
     <Head title="Dashboard" />
 
     <!-- <AppLayout :breadcrumbs="breadcrumbs"> -->
-        <Navbar />
-       <div class="mx-auto flex max-w-7xl flex-col rounded-xl p-4 text-sm">
+    <Navbar />
+    <div class="mx-auto flex max-w-7xl flex-col rounded-xl p-4 text-sm">
         <div class="mb-3 hidden rounded-lg border p-2 md:block">
             <h2 class="text-xl text-gray-500">Dashboard</h2>
         </div>
-          <div class="flex flex-col lg:flex-row gap-2 lg:gap-4">
-              <CardInfo label="Umat Baru Bulan Ini" :jumlah="umatBulanIni" />
+        <div class="flex flex-col gap-2 lg:flex-row lg:gap-4">
+            <CardInfo label="Umat Baru Bulan Ini" :jumlah="umatBulanIni" />
+            <CardInfo :label="`Umat Baru Tahun ${thisYear}`" :jumlah="umatTahunIni" />
 
+            <CardInfo :label="`Umat Baru Tahun ${lastYear}`" :jumlah="umatTahunLalu" />
             <CardInfo label="Total Umat" :jumlah="totalUmat">
                 <template #icon>
                     <svg class="h-6 w-6 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -64,7 +69,7 @@ console.log('user role : ', props.auth.user.role);
                     </svg>
                 </template>
             </CardInfo>
-          </div>
         </div>
+    </div>
     <!-- </AppLayout> -->
 </template>
